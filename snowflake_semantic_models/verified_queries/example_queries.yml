@@ -1,0 +1,118 @@
+snowflake_verified_queries:
+  - name: total_revenue_by_month
+    tables: 
+      - {{ table('orders') }}
+    question: What is the total revenue by month?
+    use_as_onboarding_question: true
+    sql: |
+      SELECT 
+        DATE_TRUNC('MONTH', ordered_at) AS month,
+        ROUND(SUM(order_total) / 100.0, 2) AS total_revenue,
+        COUNT(DISTINCT order_id) AS order_count
+      FROM {{ table('orders') }}
+      WHERE order_total > 0
+      GROUP BY 1
+      ORDER BY 1 DESC
+    verified_by: SST Demo Team
+    verified_at: '2024-12-12'
+
+  - name: top_customers_by_lifetime_spend
+    tables:
+      - {{ table('customers') }}
+    question: Who are the top 10 customers by lifetime spend?
+    use_as_onboarding_question: true
+    sql: |
+      SELECT 
+        customer_name,
+        ROUND(lifetime_spend / 100.0, 2) AS lifetime_spend_dollars,
+        count_lifetime_orders,
+        customer_type,
+        first_ordered_at,
+        last_ordered_at
+      FROM {{ table('customers') }}
+      WHERE lifetime_spend > 0
+      ORDER BY lifetime_spend DESC
+      LIMIT 10
+    verified_by: SST Demo Team
+    verified_at: '2024-12-12'
+
+  - name: food_vs_beverage_sales
+    tables:
+      - {{ table('order_items') }}
+      - {{ table('products') }}
+    question: What is the breakdown of revenue between food items and beverages?
+    use_as_onboarding_question: true
+    sql: |
+      SELECT 
+        CASE 
+          WHEN is_food_item THEN 'Food'
+          WHEN is_drink_item THEN 'Beverages'
+          ELSE 'Other'
+        END AS product_category,
+        COUNT(DISTINCT order_item_id) AS items_sold,
+        ROUND(SUM(product_price) / 100.0, 2) AS revenue_dollars,
+        ROUND(SUM(supply_cost) / 100.0, 2) AS cost_dollars,
+        ROUND((SUM(product_price) - SUM(supply_cost)) / 100.0, 2) AS profit_dollars
+      FROM {{ table('order_items') }}
+      GROUP BY 1
+      ORDER BY 3 DESC
+    verified_by: SST Demo Team
+    verified_at: '2024-12-12'
+
+  - name: store_performance_comparison
+    tables:
+      - {{ table('locations') }}
+      - {{ table('orders') }}
+    question: How does each store location compare in terms of orders and revenue?
+    use_as_onboarding_question: true
+    sql: |
+      SELECT 
+        l.location_name,
+        COUNT(DISTINCT o.order_id) AS total_orders,
+        ROUND(SUM(o.order_total) / 100.0, 2) AS total_revenue_dollars,
+        ROUND(AVG(o.order_total) / 100.0, 2) AS avg_order_value_dollars,
+        l.tax_rate,
+        l.opened_at
+      FROM {{ table('locations') }} l
+      LEFT JOIN {{ table('orders') }} o 
+        ON l.location_id = o.location_id
+      WHERE o.order_total > 0
+      GROUP BY 1, 5, 6
+      ORDER BY 3 DESC
+    verified_by: SST Demo Team
+    verified_at: '2024-12-12'
+
+  - name: repeat_customer_analysis
+    tables:
+      - {{ table('customers') }}
+    question: What percentage of customers are repeat buyers?
+    use_as_onboarding_question: false
+    sql: |
+      SELECT 
+        customer_type,
+        COUNT(*) AS customer_count,
+        ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage
+      FROM {{ table('customers') }}
+      GROUP BY 1
+      ORDER BY 2 DESC
+    verified_by: SST Demo Team
+    verified_at: '2024-12-12'
+
+  - name: daily_order_trends
+    tables:
+      - {{ table('orders') }}
+    question: Show me daily order volume and revenue trends
+    use_as_onboarding_question: false
+    sql: |
+      SELECT 
+        DATE_TRUNC('DAY', ordered_at) AS order_date,
+        COUNT(DISTINCT order_id) AS orders,
+        ROUND(SUM(order_total) / 100.0, 2) AS revenue_dollars,
+        ROUND(AVG(order_total) / 100.0, 2) AS avg_order_value_dollars
+      FROM {{ table('orders') }}
+      WHERE order_total > 0
+        AND ordered_at >= DATEADD('month', -3, CURRENT_DATE())
+      GROUP BY 1
+      ORDER BY 1 DESC
+    verified_by: SST Demo Team
+    verified_at: '2024-12-12'

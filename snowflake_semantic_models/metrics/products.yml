@@ -1,0 +1,80 @@
+snowflake_metrics:
+  - name: total_products
+    description: Total number of unique products in catalog
+    tables:
+      - {{ table('products') }}
+    expr: COUNT(DISTINCT {{ column('products', 'product_id') }})
+    synonyms:
+      - product count
+      - number of products
+      - catalog size
+
+  - name: total_order_items
+    description: Total number of items sold across all orders
+    tables:
+      - {{ table('order_items') }}
+    expr: COUNT({{ column('order_items', 'order_item_id') }})
+    synonyms:
+      - items sold
+      - total items
+      - quantity sold
+
+  - name: items_revenue
+    description: Total revenue from all order items
+    tables:
+      - {{ table('order_items') }}
+    expr: SUM({{ column('order_items', 'product_price') }})
+    synonyms:
+      - product revenue
+      - items sales
+      - product sales total
+
+  - name: total_supply_cost
+    description: Total cost of supplies for all items sold
+    tables:
+      - {{ table('order_items') }}
+    expr: SUM({{ column('order_items', 'supply_cost') }})
+    synonyms:
+      - cost of goods sold
+      - COGS
+      - total supply costs
+
+  - name: gross_profit
+    description: Gross profit calculated as item revenue minus supply costs
+    tables:
+      - {{ table('order_items') }}
+    expr: |
+      SUM({{ column('order_items', 'product_price') }}) - 
+      SUM({{ column('order_items', 'supply_cost') }})
+    synonyms:
+      - profit
+      - gross margin dollars
+      - total profit
+
+  - name: food_items_sold
+    description: Total number of food items (jaffles) sold
+    tables:
+      - {{ table('order_items') }}
+    expr: |
+      COUNT(CASE 
+        WHEN {{ column('order_items', 'is_food_item') }} = TRUE 
+        THEN {{ column('order_items', 'order_item_id') }} 
+      END)
+    synonyms:
+      - jaffles sold
+      - food item count
+      - jaffle count
+
+  - name: drink_items_sold
+    description: Total number of beverage items sold
+    tables:
+      - {{ table('order_items') }}
+    expr: |
+      COUNT(CASE 
+        WHEN {{ column('order_items', 'is_drink_item') }} = TRUE 
+        THEN {{ column('order_items', 'order_item_id') }} 
+      END)
+    synonyms:
+      - beverages sold
+      - drink count
+      - beverage count

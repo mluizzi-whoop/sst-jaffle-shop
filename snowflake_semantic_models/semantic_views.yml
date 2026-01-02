@@ -1,0 +1,28 @@
+semantic_views:
+  - name: sales_overview
+    description: Comprehensive view of orders, customers, and products for sales analytics
+    tables:
+      - {{ table('orders') }}
+      - {{ table('customers') }}
+      - {{ table('order_items') }}
+      - {{ table('products') }}
+      - {{ table('locations') }}
+
+  - name: customer_analytics
+    description: Customer behavior analysis including lifetime value and order patterns
+    tables:
+      - {{ table('customers') }}
+      - {{ table('orders') }}
+
+  - name: product_performance
+    description: Product sales performance with revenue and profit metrics
+    tables:
+      - {{ table('products') }}
+      - {{ table('order_items') }}
+      - {{ table('orders') }}
+
+  - name: store_performance
+    description: Store location performance with orders and revenue by location
+    tables:
+      - {{ table('locations') }}
+      - {{ table('orders') }}

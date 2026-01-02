@@ -1,0 +1,10 @@
+snowflake_metrics:
+  - name: total_stores
+    description: Total number of store locations
+    tables:
+      - {{ table('locations') }}
+    expr: COUNT(DISTINCT {{ column('locations', 'location_id') }})
+    synonyms:
+      - store count
+      - number of locations
+      - location count

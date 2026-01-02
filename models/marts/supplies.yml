@@ -1,24 +1,150 @@
-semantic_models:
-  #The name of the semantic model.
+version: 2
+models:
   - name: supplies
-    description: |
-      Supplies dimension table. The grain of the table is one row per supply and product combination.
-    #The name of the dbt model and schema
-    model: ref('supplies')
-    #Entities. These usually corespond to keys in the table.
-    entities:
-      - name: supply
-        type: primary
-        expr: supply_uuid
-    #Dimensions. Either categorical or time. These add additonal context to metrics. The typical querying pattern is Metric by Dimension.
-    dimensions:
+    description: Supply inventory data mart containing details about supply items, their costs, and perishability status. One row per supply cost record.
+    meta:
+      sst:
+        cortex_searchable: false
+        synonyms:
+          - supply inventory details
+          - office supply records
+          - material stock levels
+          - equipment supply data
+        primary_key: supply_uuid
+
+    columns:
+      - name: supply_uuid
+        description: The unique identifier for each supply cost record.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - supply unique identifier
+              - supply UUID
+              - supply ID code
+              - supply identifier
+            sample_values:
+              - df0b5eb60008c8458493b56369126201
+              - 74affa51ac1051a74a0e9e2573f84d75
+              - 5ba10f47c811f26e7e76aa1c3e0d4709
+              - e742bfe88750e349b40480547747bb40
+              - e03b04b01196f786bf1d555e84147446
+              - cb71fe5346ed92518d80a663267e2843
+              - b65c35196f83073137b786c284ce8d71
+              - 184cc9d279e965448a5e06564522802b
+              - 86f0deb95e645ddd7a0ffa6dd13cf946
+              - 63cd102c0193f987ce1e5deb04b85854
+            is_enum: false
+
       - name: supply_id
-        type: categorical
+        description: The identifier for the supply item.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - supply ID
+              - supply code
+              - supply identifier
+              - supply number
+            sample_values:
+              - SUP-011
+              - SUP-012
+              - SUP-029
+              - SUP-019
+              - SUP-003
+              - SUP-021
+              - SUP-007
+              - SUP-028
+              - SUP-004
+              - SUP-022
+            is_enum: false
+
       - name: product_id
-        type: categorical
+        description: The identifier for the product this supply is associated with.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - product ID
+              - product code
+              - product identifier
+              - product number
+            sample_values:
+              - JAF-002
+              - BEV-005
+              - BEV-001
+              - JAF-005
+              - BEV-002
+              - BEV-003
+              - BEV-004
+              - JAF-004
+              - JAF-001
+              - JAF-003
+            is_enum: true
+
       - name: supply_name
-        type: categorical
+        description: The name of the supply item.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - supply name
+              - supply description
+              - supply title
+              - supply label
+            sample_values:
+              - beef stew
+              - house-pickled cabbage sauerkraut
+              - pineapple
+              - biodegradable straw
+              - 16oz compostable clear cup
+              - coffee
+              - serving boat
+              - mustard
+              - tangerine
+              - kiwi
+            is_enum: false
+
       - name: supply_cost
-        type: categorical
+        description: The cost of the supply item in dollars.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - supply cost
+              - supply price
+              - supply amount
+              - supply value
+            sample_values:
+              - '0.98'
+              - '0.36'
+              - '0.52'
+              - '0.13'
+              - '0.07'
+              - '0.2'
+              - '0.43'
+              - '0.11'
+              - '0.72'
+              - '0.04'
+            is_enum: false
+
       - name: is_perishable_supply
-        type: categorical
+        description: Boolean flag indicating whether the supply item is perishable.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: BOOLEAN
+            synonyms:
+              - perishable status
+              - is perishable
+              - perishable indicator
+              - perishable flag
+            sample_values:
+              - 'False'
+              - 'True'
+            is_enum: true

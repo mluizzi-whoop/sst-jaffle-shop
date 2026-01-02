@@ -1,0 +1,27 @@
+# Snowflake Semantic Tools Configuration
+# Copy this file to `sst_config.yml` in your project root
+# This example is configured for the Jaffle Shop dbt project
+
+# ============================================================================
+# PROJECT PATHS (Required)
+# ============================================================================
+project:
+  semantic_models_dir: "snowflake_semantic_models"  # Where semantic layer YAML files live
+  dbt_models_dir: "models"                          # Where dbt models live
+
+# ============================================================================
+# VALIDATION (Optional)
+# ============================================================================
+validation:
+  strict: false                                     # If true, warnings block deployment
+  
+  exclude_dirs: []                                  # No exclusions for now - include staging for testing
+
+# ============================================================================
+# ENRICHMENT (Optional)
+# ============================================================================
+enrichment:
+  distinct_limit: 25                                # Distinct values to fetch from Snowflake
+  sample_values_display_limit: 10                   # Sample values to show in YAML files
+  synonym_model: 'mistral-large2'                   # LLM model for synonym generation
+  synonym_max_count: 4                              # Maximum synonyms per table/column

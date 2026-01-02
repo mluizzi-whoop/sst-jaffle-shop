@@ -1,35 +1,234 @@
 models:
   - name: customers
     description: Customer overview data mart, offering key details for each unique customer. One row per customer.
-    data_tests:
-      - dbt_utils.expression_is_true:
-          expression: "lifetime_spend_pretax + lifetime_tax_paid = lifetime_spend"
+    meta:
+      sst:
+        cortex_searchable: false
+        synonyms:
+          - customer purchase history
+          - customer spending overview
+          - customer order details
+          - customer lifetime value data
+        primary_key: customer_id
+
     columns:
       - name: customer_id
         description: The unique key of the orders mart.
         data_tests:
           - not_null
           - unique
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - customer unique identifier
+              - customer key
+              - customer code
+              - unique customer ID
+            sample_values:
+              - 1acd402c-8758-4f7a-9a24-57636d44ede6
+              - 32927010-1d7d-4cd9-a500-593804ff0e77
+              - 49c4bc11-2495-438d-9b87-3c395574433f
+              - d78e6e3f-3ff1-49b6-9dcb-129816aa0ecb
+              - 5c3c91f4-9d48-426f-9862-e165bf8f616d
+              - cd67e795-f5fa-470f-9a4f-4060d5951279
+              - bbfdba43-2871-4e95-84d9-e2ff45960e7d
+              - 5a2b4f14-e7ac-4b3a-bf58-688bca696e5f
+              - a7cebb21-0f26-4834-8a09-e3269b21a77b
+              - 3a1577eb-7860-498f-936a-da13e16cbd8c
+            is_enum: false
+
       - name: customer_name
         description: Customers' full name.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - customer full name
+              - customer name
+              - full name
+              - name of customer
+            sample_values:
+              - Emily Perry
+              - Fred Gibson
+              - Timothy Navarro
+              - Pamela Lane
+              - Nathan Cox
+              - Michael Mendoza
+              - Madeline Smith
+              - Carrie Russell MD
+              - William Diaz
+              - Mr. Jeremy Cameron
+            is_enum: false
+
       - name: count_lifetime_orders
         description: Total number of orders a customer has ever placed.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - total orders placed
+              - lifetime order count
+              - total order quantity
+              - number of orders
+            sample_values:
+              - '41'
+              - '90'
+              - '141'
+              - '116'
+              - '66'
+              - '8'
+              - '87'
+              - '81'
+              - '61'
+              - '65'
+            is_enum: false
+
       - name: first_ordered_at
         description: The timestamp when a customer placed their first order.
+        meta:
+          sst:
+            column_type: time_dimension
+            data_type: TIMESTAMP_NTZ
+            synonyms:
+              - first order date
+              - initial order timestamp
+              - first purchase date
+              - first order time
+            sample_values:
+              - '2025-04-18 00:00:00'
+              - '2025-04-17 00:00:00'
+              - '2024-11-08 00:00:00'
+              - '2025-07-12 00:00:00'
+              - '2025-01-30 00:00:00'
+              - '2025-01-07 00:00:00'
+              - '2025-07-20 00:00:00'
+              - '2025-01-25 00:00:00'
+              - '2025-08-17 00:00:00'
+              - '2024-12-15 00:00:00'
+            is_enum: false
+
       - name: last_ordered_at
         description: The timestamp of a customer's most recent order.
+        meta:
+          sst:
+            column_type: time_dimension
+            data_type: TIMESTAMP_NTZ
+            synonyms:
+              - last order date
+              - most recent order timestamp
+              - latest order date
+              - recent order time
+            sample_values:
+              - '2025-06-18 00:00:00'
+              - '2025-08-08 00:00:00'
+              - '2025-08-19 00:00:00'
+              - '2025-08-23 00:00:00'
+              - '2025-08-13 00:00:00'
+              - '2025-06-13 00:00:00'
+              - '2025-08-21 00:00:00'
+              - '2025-05-13 00:00:00'
+              - '2025-06-12 00:00:00'
+              - '2025-07-29 00:00:00'
+            is_enum: false
+
       - name: lifetime_spend_pretax
         description: The sum of all the pre-tax subtotals of every order a customer has placed.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - total pre-tax spend
+              - pretax spending
+              - total pre-tax amount
+              - pretax order total
+            sample_values:
+              - '1359.0'
+              - '91.0'
+              - '850.0'
+              - '1069.0'
+              - '498.0'
+              - '370.0'
+              - '1228.0'
+              - '157.0'
+              - '1535.0'
+              - '988.0'
+            is_enum: false
+
       - name: lifetime_tax_paid
         description: The sum of all the tax portion of every order a customer has placed.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - total tax paid
+              - lifetime tax amount
+              - total tax spent
+              - tax paid total
+            sample_values:
+              - '13.48'
+              - '24.64'
+              - '13.84'
+              - '70.26'
+              - '81.27'
+              - '64.28'
+              - '17.5'
+              - '80.55'
+              - '28.14'
+              - '154.08'
+            is_enum: false
+
       - name: lifetime_spend
         description: The sum of all the order totals (including tax) that a customer has ever placed.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - total spend
+              - lifetime spending
+              - total order amount
+              - total amount spent
+            sample_values:
+              - '750.48'
+              - '1911.08'
+              - '1283.6'
+              - '570.96'
+              - '1154.34'
+              - '105.04'
+              - '349.44'
+              - '644.8'
+              - '440.96'
+              - '553.28'
+            is_enum: false
+
       - name: customer_type
         description: Options are 'new' or 'returning', indicating if a customer has ordered more than once or has only placed their first order to date.
         data_tests:
           - accepted_values:
               values: ["new", "returning"]
 
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - customer status
+              - customer category
+              - customer classification
+              - customer type
+            sample_values:
+              - returning
+              - new
+            is_enum: true
+    data_tests:
+      - dbt_utils.expression_is_true:
+          expression: "lifetime_spend_pretax + lifetime_tax_paid = lifetime_spend"
 semantic_models:
   - name: customers
     defaults:

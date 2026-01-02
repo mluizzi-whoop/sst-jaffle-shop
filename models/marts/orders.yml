@@ -1,34 +1,430 @@
 models:
   - name: orders
     description: Order overview data mart, offering key details for each order inlcluding if it's a customer's first order and a food vs. drink item breakdown. One row per order.
-    data_tests:
-      - dbt_utils.expression_is_true:
-          expression: "order_items_subtotal = subtotal"
-      - dbt_utils.expression_is_true:
-          expression: "order_total = subtotal + tax_paid"
+    meta:
+      sst:
+        cortex_searchable: false
+        synonyms:
+          - order details overview
+          - customer order summaries
+          - food and drink order breakdowns
+          - first-time customer orders
+        primary_key: order_id
+
     columns:
       - name: order_id
         description: The unique key of the orders mart.
         data_tests:
           - not_null
           - unique
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - order identifier
+              - order key
+              - order code
+              - order unique ID
+            sample_values:
+              - a6ae01ba-cd7e-4ff7-963b-87e65c4f10a7
+              - e1339cc1-18d2-43b4-a0d4-936cb37a88c4
+              - 639f4f09-a17d-49e3-86dd-41aa9e95f484
+              - 81a3ccf3-a863-4dd0-b377-3a920c2734e3
+              - dd805e97-4e89-4024-8144-958c26e72dee
+              - 9f2ead7e-5d20-4246-9dc5-474639107f7b
+              - 90763a40-3a8a-4fe7-852a-fa6186883a8c
+              - 2d8df612-bcd8-49f1-8d27-91dfcc951d9f
+              - d3051b14-b08e-46b9-b693-adbfa993d488
+              - 5aaf0bf1-53b2-4063-a1a2-876d98906966
+            is_enum: false
+
+      - name: location_id
+        description: The identifier for the location where the order was placed.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - location identifier
+              - location key
+              - location code
+              - location unique ID
+            sample_values:
+              - 4b6c2304-2b9e-41e4-942a-cf11a1819378
+              - 40e6ddd6-b8f6-4e17-8bd6-5e53966809d2
+            is_enum: true
+
       - name: customer_id
         description: The foreign key relating to the customer who placed the order.
         data_tests:
           - relationships:
               to: ref('stg_customers')
               field: customer_id
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - customer identifier
+              - customer key
+              - customer code
+              - customer unique ID
+            sample_values:
+              - 117c9a65-4a4c-494f-8a54-64305d57c551
+              - c0a8be37-975c-4b34-8989-1eb846c63871
+              - fa5ae382-e7ab-4d94-bdfc-7d689bc335ab
+              - 848485f0-198f-4efa-8335-707db71a7434
+              - f55982fc-a2f7-407d-b845-3b32df0463f7
+              - 15b9a6ba-816d-4956-936f-2894eff8b72d
+              - bab8979a-8cd9-477b-bbd7-2e1dbab88437
+              - 1991aaf6-d1b3-45f3-a33b-7a9174d18f8b
+              - f14bcc19-681e-43a6-94e0-9748a8455850
+              - c958448f-45d7-416d-a358-45098ec2a9da
+            is_enum: false
+
+      - name: subtotal_cents
+        description: The order subtotal amount in cents (before tax).
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - subtotal in cents
+              - subtotal amount in cents
+              - subtotal value in cents
+              - subtotal cents
+            sample_values:
+              - '8500'
+              - '7800'
+              - '5800'
+              - '2800'
+              - '8900'
+              - '6900'
+              - '5400'
+              - '8000'
+              - '2900'
+              - '9500'
+            is_enum: false
+
+      - name: tax_paid_cents
+        description: The tax amount paid in cents.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - tax paid in cents
+              - tax amount in cents
+              - tax value in cents
+              - tax cents
+            sample_values:
+              - '306'
+              - '220'
+              - '292'
+              - '304'
+              - '324'
+              - '318'
+              - '200'
+              - '356'
+              - '152'
+              - '570'
+            is_enum: false
+
+      - name: order_total_cents
+        description: The total order amount in cents (subtotal plus tax).
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - order total in cents
+              - order amount in cents
+              - order value in cents
+              - order cents
+            sample_values:
+              - '6760'
+              - '5406'
+              - '4680'
+              - '8008'
+              - '7420'
+              - '3015'
+              - '9776'
+              - '3328'
+              - '3640'
+              - '6344'
+            is_enum: false
+
+      - name: subtotal
+        description: The order subtotal amount in dollars (before tax).
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - subtotal amount
+              - subtotal value
+              - subtotal in dollars
+              - subtotal USD
+            sample_values:
+              - '78.0'
+              - '74.0'
+              - '58.0'
+              - '31.0'
+              - '40.0'
+              - '54.0'
+              - '69.0'
+              - '91.0'
+              - '44.0'
+              - '53.0'
+            is_enum: false
+
+      - name: tax_paid
+        description: The tax amount paid in dollars.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - tax paid amount
+              - tax paid value
+              - tax in dollars
+              - tax USD
+            sample_values:
+              - '2.8'
+              - '1.92'
+              - '3.16'
+              - '2.08'
+              - '4.8'
+              - '2.94'
+              - '2.52'
+              - '1.62'
+              - '5.7'
+              - '3.06'
+            is_enum: false
+
       - name: order_total
         description: The total amount of the order in USD including tax.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - total order amount
+              - total order value
+              - total in dollars
+              - total USD
+            sample_values:
+              - '24.38'
+              - '97.76'
+              - '85.28'
+              - '75.26'
+              - '60.31'
+              - '80.08'
+              - '54.06'
+              - '27.04'
+              - '33.28'
+              - '76.96'
+            is_enum: false
+
       - name: ordered_at
         description: The timestamp the order was placed at.
+        meta:
+          sst:
+            column_type: time_dimension
+            data_type: TIMESTAMP_NTZ
+            synonyms:
+              - order timestamp
+              - order date and time
+              - order time
+              - order placement time
+            sample_values:
+              - '2025-07-05 00:00:00'
+              - '2025-07-18 00:00:00'
+              - '2025-03-03 00:00:00'
+              - '2024-12-13 00:00:00'
+              - '2025-01-08 00:00:00'
+              - '2024-12-28 00:00:00'
+              - '2025-01-26 00:00:00'
+              - '2024-10-21 00:00:00'
+              - '2025-05-14 00:00:00'
+              - '2024-12-08 00:00:00'
+            is_enum: false
+
       - name: order_cost
         description: The sum of supply expenses to fulfill the order.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - order supply cost
+              - order expense
+              - order fulfillment cost
+              - order cost amount
+            sample_values:
+              - '6.39'
+              - '12.98'
+              - '7.21'
+              - '13.74'
+              - '12.95'
+              - '9.21'
+              - '8.43'
+              - '12.1'
+              - '10.82'
+              - '7.55'
+            is_enum: false
+
+      - name: order_items_subtotal
+        description: The subtotal amount calculated from the sum of all order items in dollars.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - items subtotal
+              - items total amount
+              - items total value
+              - items subtotal amount
+            sample_values:
+              - '91.0'
+              - '44.0'
+              - '31.0'
+              - '40.0'
+              - '54.0'
+              - '69.0'
+              - '53.0'
+              - '79.0'
+              - '55.0'
+              - '43.0'
+            is_enum: false
+
+      - name: count_food_items
+        description: The count of food items in the order.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - food items count
+              - number of food items
+              - food item quantity
+              - food items total
+            sample_values:
+              - '1.0'
+              - '5.0'
+              - nan
+              - '0.0'
+              - '4.0'
+              - '2.0'
+              - '3.0'
+            is_enum: false
+
+      - name: count_drink_items
+        description: The count of drink items in the order.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - drink items count
+              - number of drink items
+              - drink item quantity
+              - drink items total
+            sample_values:
+              - nan
+              - '0.0'
+              - '4.0'
+              - '1.0'
+              - '5.0'
+              - '2.0'
+              - '3.0'
+            is_enum: false
+
+      - name: count_order_items
+        description: The total count of items in the order.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - order items count
+              - number of order items
+              - order item quantity
+              - order items total
+            sample_values:
+              - '4.0'
+              - '8.0'
+              - '6.0'
+              - '1.0'
+              - '5.0'
+              - '10.0'
+              - nan
+              - '2.0'
+              - '3.0'
+            is_enum: false
+
       - name: is_food_order
         description: A boolean indicating if this order included any food items.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: BOOLEAN
+            synonyms:
+              - food order flag
+              - food order indicator
+              - food order boolean
+              - food order status
+            sample_values:
+              - 'True'
+              - 'False'
+            is_enum: true
+
       - name: is_drink_order
         description: A boolean indicating if this order included any drink items.
 
+        meta:
+          sst:
+            column_type: dimension
+            data_type: BOOLEAN
+            synonyms:
+              - drink order flag
+              - drink order indicator
+              - drink order boolean
+              - drink order status
+            sample_values:
+              - 'True'
+              - 'False'
+            is_enum: true
+
+      - name: customer_order_number
+        description: The sequential order number for this customer (e.g., 1st order, 2nd order, etc.).
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - customer order count
+              - customer order sequence
+              - customer order number
+              - customer order index
+            sample_values:
+              - '126'
+              - '172'
+              - '201'
+              - '121'
+              - '181'
+              - '146'
+              - '198'
+              - '179'
+              - '187'
+              - '141'
+            is_enum: false
+    data_tests:
+      - dbt_utils.expression_is_true:
+          expression: "order_items_subtotal = subtotal"
+      - dbt_utils.expression_is_true:
+          expression: "order_total = subtotal + tax_paid"
 unit_tests:
   - name: test_order_items_compute_to_bools_correctly
     description: "Test that the counts of drinks and food orders convert to booleans properly."
@@ -36,44 +432,17 @@ unit_tests:
     given:
       - input: ref('order_items')
         rows:
-          - {
-              order_id: 1,
-              order_item_id: 1,
-              is_drink_item: false,
-              is_food_item: true,
-            }
-          - {
-              order_id: 1,
-              order_item_id: 2,
-              is_drink_item: true,
-              is_food_item: false,
-            }
-          - {
-              order_id: 2,
-              order_item_id: 3,
-              is_drink_item: false,
-              is_food_item: true,
-            }
+          - {order_id: 1, order_item_id: 1, is_drink_item: false, is_food_item: true}
+          - {order_id: 1, order_item_id: 2, is_drink_item: true, is_food_item: false}
+          - {order_id: 2, order_item_id: 3, is_drink_item: false, is_food_item: true}
       - input: ref('stg_orders')
         rows:
-          - { order_id: 1 }
-          - { order_id: 2 }
+          - {order_id: 1}
+          - {order_id: 2}
     expect:
       rows:
-        - {
-            order_id: 1,
-            count_food_items: 1,
-            count_drink_items: 1,
-            is_drink_order: true,
-            is_food_order: true,
-          }
-        - {
-            order_id: 2,
-            count_food_items: 1,
-            count_drink_items: 0,
-            is_drink_order: false,
-            is_food_order: true,
-          }
+        - {order_id: 1, count_food_items: 1, count_drink_items: 1, is_drink_order: true, is_food_order: true}
+        - {order_id: 2, count_food_items: 1, count_drink_items: 0, is_drink_order: false, is_food_order: true}
 
 semantic_models:
   - name: orders

@@ -1,0 +1,86 @@
+snowflake_filters:
+  - name: completed_orders
+    tables:
+      - {{ table('orders') }}
+    description: Filter for orders that have been completed (non-zero order total)
+    expr: "{{ column('orders', 'order_total') }} > 0"
+
+  - name: food_orders_only
+    tables:
+      - {{ table('orders') }}
+    description: Filter for orders that contain food items
+    expr: "{{ column('orders', 'is_food_order') }} = TRUE"
+
+  - name: drink_orders_only
+    tables:
+      - {{ table('orders') }}
+    description: Filter for orders that contain beverage items
+    expr: "{{ column('orders', 'is_drink_order') }} = TRUE"
+
+  - name: repeat_buyers
+    tables:
+      - {{ table('customers') }}
+    description: Filter for customers who have made more than one purchase
+    expr: "{{ column('customers', 'count_lifetime_orders') }} > 1"
+
+  - name: new_customers
+    tables:
+      - {{ table('customers') }}
+    description: Filter for customers who have made exactly one purchase
+    expr: "{{ column('customers', 'customer_type') }} = 'new'"
+
+  - name: food_items
+    tables:
+      - {{ table('products') }}
+    description: Filter for food/jaffle products
+    expr: "{{ column('products', 'is_food_item') }} = TRUE"
+
+  - name: beverage_items
+    tables:
+      - {{ table('products') }}
+    description: Filter for beverage products
+    expr: "{{ column('products', 'is_drink_item') }} = TRUE"
+
+  - name: recent_orders_30d
+    tables:
+      - {{ table('orders') }}
+    description: Filter for orders placed in the last 30 days
+    expr: "{{ column('orders', 'ordered_at') }} >= DATEADD(day, -30, CURRENT_DATE())"
+
+  - name: recent_orders_90d
+    tables:
+      - {{ table('orders') }}
+    description: Filter for orders placed in the last 90 days
+    expr: "{{ column('orders', 'ordered_at') }} >= DATEADD(day, -90, CURRENT_DATE())"
+
+  - name: high_value_orders
+    tables:
+      - {{ table('orders') }}
+    description: Filter for orders with total greater than $50 (5000 cents)
+    expr: "{{ column('orders', 'order_total') }} > 5000"
+
+  - name: multi_item_orders
+    tables:
+      - {{ table('orders') }}
+    description: Filter for orders with 2 or more items
+    expr: "{{ column('orders', 'count_order_items') }} >= 2"
+
+  - name: high_value_customers
+    tables:
+      - {{ table('customers') }}
+    description: Filter for customers with lifetime spend over $100
+    expr: "{{ column('customers', 'lifetime_spend') }} > 10000"
+
+  - name: september_2024_orders
+    tables:
+      - {{ table('orders') }}
+    description: Filter for orders placed in September 2024 (the sample data month)
+    expr: |
+      {{ column('orders', 'ordered_at') }} >= '2024-09-01' 
+      AND {{ column('orders', 'ordered_at') }} < '2024-10-01'
+
+  - name: profitable_products
+    tables:
+      - {{ table('order_items') }}
+    description: Filter for order items where product price exceeds supply cost
+    expr: "{{ column('order_items', 'product_price') }} > {{ column('order_items', 'supply_cost') }}"

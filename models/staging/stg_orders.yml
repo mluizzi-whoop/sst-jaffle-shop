@@ -1,12 +1,251 @@
 models:
   - name: stg_orders
     description: Order data with basic cleaning and transformation applied, one row per order.
-    data_tests:
-      - dbt_utils.expression_is_true:
-          expression: "order_total - tax_paid = subtotal"
+    meta:
+      sst:
+        cortex_searchable: false
+        synonyms:
+          - order transaction details
+          - sales order information
+          - order history data
+          - order summary records
+        primary_key: order_id
+
     columns:
       - name: order_id
         description: The unique key for each order.
         data_tests:
           - not_null
           - unique
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - order identifier
+              - order key
+              - order code
+              - order number
+            sample_values:
+              - b83630c1-0fdc-4cd2-818d-0b6d4384ce86
+              - 858944f4-04c5-4997-9572-ca8f0c21a34e
+              - b8f5588c-ae9e-444a-af90-706002f0827f
+              - ded98610-a297-4978-b95d-5c3f1921482d
+              - ca34757c-b5bb-4f8c-8c77-f5132a28e863
+              - 9b4b6796-5522-4f26-b8fe-e0ac150cf8ba
+              - ac9e6f11-27c0-4e9d-ba93-1d2467e62f49
+              - 855a3a5a-bbfc-48eb-a5d6-65210b31fc3e
+              - 43443c2f-6eb7-4dbf-86e9-a0ed286d161c
+              - 899ec395-7d28-40df-8914-730e4ae41df7
+            is_enum: false
+
+      - name: location_id
+        description: The identifier for the location where the order was placed.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - location identifier
+              - location key
+              - location code
+              - location number
+            sample_values:
+              - 4b6c2304-2b9e-41e4-942a-cf11a1819378
+              - 40e6ddd6-b8f6-4e17-8bd6-5e53966809d2
+            is_enum: true
+
+      - name: customer_id
+        description: The identifier for the customer who placed the order.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - customer identifier
+              - customer key
+              - customer code
+              - customer number
+            sample_values:
+              - 019bbbbd-bb75-49d2-8d74-d1c01012bd21
+              - b81636bb-71f3-4ace-8eb7-628abe1eac07
+              - 2f771a5a-3d76-48e3-985b-b7e91e092c46
+              - 3a1577eb-7860-498f-936a-da13e16cbd8c
+              - 61004774-fb70-403c-ae81-a1e9cd187146
+              - 3dc87d1c-7942-471e-b947-26b7ec78cedb
+              - 2480125c-2d37-405c-96b9-ca32b2c75b33
+              - 96f4e93c-c759-4fc7-b4a3-c8a153858bea
+              - 24ea0325-a7d6-4388-b86c-7b51e5805b26
+              - 2609004e-90a8-450e-98f3-5ebc16841cd5
+            is_enum: false
+
+      - name: subtotal_cents
+        description: The order subtotal amount in cents (before tax).
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - subtotal in cents
+              - subtotal amount in cents
+              - subtotal value in cents
+              - subtotal price in cents
+            sample_values:
+              - '8000'
+              - '3900'
+              - '9500'
+              - '9000'
+              - '3800'
+              - '7900'
+              - '3700'
+              - '4700'
+              - '5300'
+              - '6900'
+            is_enum: false
+
+      - name: tax_paid_cents
+        description: The tax amount paid in cents.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - tax paid in cents
+              - tax amount in cents
+              - tax value in cents
+              - tax price in cents
+            sample_values:
+              - '172'
+              - '65'
+              - '126'
+              - '120'
+              - '68'
+              - '263'
+              - '396'
+              - '198'
+              - '284'
+              - '131'
+            is_enum: false
+
+      - name: order_total_cents
+        description: The total order amount in cents (subtotal plus tax).
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - order total in cents
+              - total order amount in cents
+              - total order value in cents
+              - total order price in cents
+            sample_values:
+              - '4056'
+              - '1165'
+              - '2331'
+              - '7632'
+              - '2013'
+              - '5512'
+              - '1272'
+              - '1456'
+              - '4770'
+              - '8216'
+            is_enum: false
+
+      - name: subtotal
+        description: The order subtotal amount in dollars (before tax).
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - subtotal amount
+              - subtotal value
+              - subtotal price
+              - subtotal cost
+            sample_values:
+              - '33.0'
+              - '87.0'
+              - '37.0'
+              - '35.0'
+              - '43.0'
+              - '38.0'
+              - '56.0'
+              - '74.0'
+              - '26.0'
+              - '78.0'
+            is_enum: false
+
+      - name: tax_paid
+        description: The tax amount paid in dollars.
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - tax paid amount
+              - tax value
+              - tax price
+              - tax cost
+            sample_values:
+              - '1.38'
+              - '1.31'
+              - '2.7'
+              - '4.32'
+              - '1.72'
+              - '2.46'
+              - '3.96'
+              - '1.52'
+              - '3.18'
+              - '2.28'
+            is_enum: false
+
+      - name: order_total
+        description: The total order amount in dollars (subtotal plus tax).
+        meta:
+          sst:
+            column_type: fact
+            data_type: NUMBER
+            synonyms:
+              - order total amount
+              - total order value
+              - total order price
+              - total order cost
+            sample_values:
+              - '28.08'
+              - '35.36'
+              - '19.76'
+              - '75.92'
+              - '87.97'
+              - '67.84'
+              - '84.8'
+              - '5.2'
+              - '90.48'
+              - '45.76'
+            is_enum: false
+
+      - name: ordered_at
+        description: The timestamp when the order was placed.
+        meta:
+          sst:
+            column_type: time_dimension
+            data_type: TIMESTAMP_NTZ
+            synonyms:
+              - order timestamp
+              - order date and time
+              - order time
+              - order date
+            sample_values:
+              - '2025-06-18 00:00:00'
+              - '2025-07-05 00:00:00'
+              - '2025-07-17 00:00:00'
+              - '2025-07-22 00:00:00'
+              - '2025-08-10 00:00:00'
+              - '2025-08-20 00:00:00'
+              - '2025-07-13 00:00:00'
+              - '2025-07-15 00:00:00'
+              - '2025-08-15 00:00:00'
+              - '2025-08-29 00:00:00'
+            is_enum: false
+    data_tests:
+      - dbt_utils.expression_is_true:
+          expression: "order_total - tax_paid = subtotal"

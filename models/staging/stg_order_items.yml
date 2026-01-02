@@ -1,12 +1,44 @@
 models:
   - name: stg_order_items
     description: Individual food and drink items that make up our orders, one row per item.
+    meta:
+      sst:
+        cortex_searchable: false
+        synonyms:
+          - individual order items
+          - food and drink orders
+          - order item details
+          - order components
+        primary_key: order_item_id
+
     columns:
       - name: order_item_id
         description: The unique key for each order item.
         data_tests:
           - not_null
           - unique
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - item identifier
+              - item unique key
+              - order item code
+              - item ID
+            sample_values:
+              - 099a05af-77d4-41c9-9bb0-e1a8e523fc03
+              - 4c6a92fc-7b05-45a6-8049-1c15bbe0ece0
+              - 6592c956-e725-4179-b8de-a8206c854d5b
+              - db82aa13-357c-442e-8ec5-0c06f8973ae0
+              - bbaf1411-48f1-418e-a464-05fb159c3017
+              - b7581613-da7b-490d-9738-fce1678038bc
+              - 0f31b482-0694-4941-b40e-d73b13a69f61
+              - 3adbdbd1-06db-4259-8c01-5a9f4100e5b3
+              - 546e5f00-dd66-46a5-b60e-c1ab7fe8625b
+              - 12c8948f-bca6-4ab3-beaf-7017efe19c66
+            is_enum: false
+
       - name: order_id
         description: The corresponding order each order item belongs to
         data_tests:
@@ -14,3 +46,48 @@ models:
           - relationships:
               to: ref('stg_orders')
               field: order_id
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - order identifier
+              - order unique key
+              - order code
+              - order ID
+            sample_values:
+              - 6ce387d8-9846-459d-b67b-64d8af83e386
+              - 26243a14-e416-4051-a0b2-c4d8349a1761
+              - e0bebebb-b0e8-4177-b9a7-29bee5ca94f8
+              - 44c30fea-d832-4607-93ab-b6548c82167a
+              - 596be87e-49c9-4847-a5e6-8c113dc6db0e
+              - 9e9b1155-36e8-499c-b5b6-727fa7ddb860
+              - cb078923-bd30-4636-b1a7-d5c0704d4ef9
+              - 01949c92-0a07-4940-9748-7f68652cce57
+              - 37dd0273-da96-41e8-8d73-5ed5e56c382a
+              - d0667be3-d917-4d96-82f2-730ee260863d
+            is_enum: false
+
+      - name: product_id
+        description: The identifier for the product in this order item.
+        meta:
+          sst:
+            column_type: dimension
+            data_type: TEXT
+            synonyms:
+              - product identifier
+              - product unique key
+              - product code
+              - product ID
+            sample_values:
+              - JAF-005
+              - BEV-002
+              - JAF-002
+              - JAF-003
+              - BEV-005
+              - BEV-001
+              - BEV-003
+              - BEV-004
+              - JAF-004
+              - JAF-001
+            is_enum: true

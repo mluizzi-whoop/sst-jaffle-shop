@@ -1,0 +1,44 @@
+snowflake_metrics:
+  - name: total_customers
+    description: Total number of unique customers
+    tables:
+      - {{ table('customers') }}
+    expr: COUNT(DISTINCT {{ column('customers', 'customer_id') }})
+    synonyms:
+      - customer count
+      - number of customers
+      - total customer count
+
+  - name: repeat_customers
+    description: Number of customers who have made more than one order
+    tables:
+      - {{ table('customers') }}
+    expr: |
+      COUNT(DISTINCT CASE 
+        WHEN {{ column('customers', 'count_lifetime_orders') }} > 1 
+        THEN {{ column('customers', 'customer_id') }} 
+      END)
+    synonyms:
+      - returning customers
+      - repeat buyers
+      - loyal customers
+
+  - name: lifetime_spend_total
+    description: Total revenue across all customer orders (including tax)
+    tables:
+      - {{ table('customers') }}
+    expr: SUM({{ column('customers', 'lifetime_spend') }})
+    synonyms:
+      - total customer revenue
+      - total customer spend
+      - customer lifetime value total
+
+  - name: average_customer_lifetime_value
+    description: Average total spend per customer across their lifetime
+    tables:
+      - {{ table('customers') }}
+    expr: AVG({{ column('customers', 'lifetime_spend') }})
+    synonyms:
+      - avg CLV
+      - average lifetime value
+      - mean customer value
