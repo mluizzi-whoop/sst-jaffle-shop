@@ -4,8 +4,32 @@ This tutorial will take you through setting up a Snowflake trial account, settin
 ## Prerequisites
 - **Python 3.10 or 3.11**
 - **Conda**
+- **Git**
 
-## Step 1 - Environment Setup
+## Step 1 - Clone the Repository
+
+1. Open your IDE of choice (e.g., Cursor, VS Code).
+
+2. Open a terminal within your IDE. This is where you will run all commands in this tutorial.
+    - In Cursor/VS Code: Use the integrated terminal (`View` → `Terminal` or `` Ctrl+` ``)
+
+3. In the terminal, navigate to where you want to store the project and clone this repository:
+    ```
+    git clone https://github.com/WhoopInc/sst-jaffle-shop.git
+    ```
+
+4. Change into the cloned directory:
+    ```
+    cd sst-jaffle-shop
+    ```
+
+5. Open the project folder in your IDE:
+    - In Cursor/VS Code: `File` → `Open Folder...` and select the `sst-jaffle-shop` folder
+    - Or from the terminal: `cursor .` (Cursor) or `code .` (VS Code)
+    
+    **Tip:** After opening the folder, you may need to reopen the integrated terminal to ensure it starts in the project directory.
+
+## Step 2 - Environment Setup
 
 This tutorial is going to use Conda for environment management. If you don't have Conda installed on your machine, please set that up before proceeding.
 
@@ -13,6 +37,11 @@ This tutorial is going to use Conda for environment management. If you don't hav
     ```
     conda create -n sst-jaffle-shop python=3.11 -y
     ```
+    
+    > **WHOOP Employees:** Use this command instead to avoid internal channel conflicts:
+    > ```
+    > conda create -c conda-forge --override-channels -n sst-jaffle-shop python=3.11 -y
+    > ```
 
 2. After creating the environment, you will want to activate the environment.
     ```
@@ -33,7 +62,7 @@ This tutorial is going to use Conda for environment management. If you don't hav
     - You're certain no other distributions exist in your configured pip channels
 
 
-## Step 2 - Create a Snowflake Trial Account
+## Step 3 - Create a Snowflake Trial Account
 1. Navigate to the [Snowflake free trial sign-up page](https://signup.snowflake.com/).
     - **Note:** Snowflake trial accounts are limited to 30 days and $400 in consumption. This is account is intended to suffice for this tutorial but should not be used for further SST development.
 2. Enter in the required personal information.
@@ -51,8 +80,8 @@ This tutorial is going to use Conda for environment management. If you don't hav
 
    <img src="images/snowflake-connect-a-tool.png" alt="Connect a tool to Snowflake" width="300">
 
-## Step 3 - Set up the dbt Project
-1. Next, we will be creating a `profiles.yml` file to be used for the dbt project. This is where we will drop in the Snowflake credentials that you opened up in step 2.6 above. To do this:
+## Step 4 - Set up the dbt Project
+1. Next, we will be creating a `profiles.yml` file to be used for the dbt project. This is where we will drop in the Snowflake credentials that you opened up in step 3.6 above. To do this:
     - Run `mkdir -p ~/.dbt` to create a `.dbt` directory if it doesn't already exist. If you already have one, this is a harmless operation.
     - Inside of the `.dbt` directory, you will need to make a `profiles.yml` file if it doesn't exist. If you already have a `profiles.yml` files, you will need to open it and add the following new profile to the bottom. If you don't have one, just create it and add the profile.  We will add both a dev and prod environment here.
         ```yaml
@@ -87,7 +116,7 @@ This tutorial is going to use Conda for environment management. If you don't hav
 
 3. If you are cloning this repo, the dbt project should now be largely set up. In the `dbt_project.yml` file in the root directory of this repo that `profile: sst_jaffle_shop` is configured, so when you run dbt commands it will be connected to your new Snowflake trial account.
 
-## Step 4 - Build the dbt project
+## Step 5 - Build the dbt project
 1. The first step of building the dbt project will be writing some raw data to Snowflake. This project uses seed files, so we will write those seed files to Snowflake tables. First, you will need to create the database in Snowflake that we will be writing to. If you used the project default database name in your `profiles.yml` file, sst_jaffle_shop, we will need to create that in Snowflake. In a new Snowflake worksheet, run the following:
     ```SQL
     CREATE DATABASE IF NOT EXISTS DEV;
@@ -95,12 +124,16 @@ This tutorial is going to use Conda for environment management. If you don't hav
     ```SQL
     CREATE DATABASE IF NOT EXISTS PROD;
     ```
+    ```SQL
+    ALTER ACCOUNT SET CORTEX_ENABLED_CROSS_REGION = 'AWS_US';
+    ```
+    **Note:** The `ALTER ACCOUNT` command enables Cortex cross-region support, which is required for Cortex Complete to function properly in your Snowflake account.
 
 2. Once that database is created, you can open a new terminal inside of this repo and run the following command:
     ```
     dbt seed --vars '{"load_source_data": true}'
     ```
-    **Note:** Make sure the terminal you are using has the conda environment activated that we created in step 1. If it doesn't, please activate it by running `conda activate sst-jaffle-shop` before running any dbt commands.
+    **Note:** Make sure the terminal you are using has the conda environment activated that we created in step 2. If it doesn't, please activate it by running `conda activate sst-jaffle-shop` before running any dbt commands.
 
     Because we put `target: dev` as the second line in our `profiles.yml` file, which makes dev the default, this will write the seed files to the schema `DEV.RAW`.
 
@@ -110,7 +143,7 @@ This tutorial is going to use Conda for environment management. If you don't hav
     ```
 4. Now that all of the dbt models are built, we are ready to set up SST.
 
-## Step 5 - Using the SST installation wizard
+## Step 6 - Using the SST installation wizard
 1. Snowflake Semantic Tools provides us with a nice command line wizard to help turn a dbt project into an SST project.
 
     To do this, simply run the following command in your terminal, ensuring that you have you `sst-jaffle-shop` environment activated and your terminals working directory is still the dbt project.
@@ -142,7 +175,7 @@ This tutorial is going to use Conda for environment management. If you don't hav
 
     And the files that it says were created should now be in your dbt project.
 
-## Step 6 - Enriching our dbt models
+## Step 7 - Enriching our dbt models
 1. With dbt now initialized and installed in our project, we need to enrich our dbt models. As you can see in the image below, we have several dbt SQL models in this project currently. We will use SST to create a YAML model for each of these.
     
     <img src="images/dbt-repo-models-only.png" alt="models before enrichment" >
@@ -162,7 +195,7 @@ This tutorial is going to use Conda for environment management. If you don't hav
 
 4. And that's it! Now you have all of the metadata you need to build out the dimensions, time dimensions and facts for a Snowflake Semantic View natively in your dbt project.
 
-## Step 7 - Adding Metrics
+## Step 8 - Adding Metrics
 In the `/snowflake_semantic_models/metrics/` you can see there are some exmaple metrics, all commented out. Let's build some of our own for the Jaffle Shop.
 
 1. Create a file called `metrics.yml` (can really be called anything)
@@ -230,7 +263,7 @@ snowflake_metrics:
 
 3. As you can see, we have defined 5 metrics. We just need to put in the metric name, a description, a reference to the table(s) required for that metric, a valid Snowflake SQL syntax and some synonyms.
 
-## Step 7 - Adding Relationships
+## Step 9 - Adding Relationships
 Now let's repeat the same process for relationships.
 1. In the `/snowflake_semantic_models/relationships/` directory, create a file called `relationships.yml`.
 2. Paste in the following code which will define some relationships between our tables:
@@ -262,7 +295,7 @@ snowflake_relationships:
       - "{{ column('orders', 'location_id') }} = {{ column('locations', 'location_id') }}"
 ```
 
-## Step 7 - Defining a Semantic View
+## Step 10 - Defining a Semantic View
 Now that we have all the components of a Semantic View defined in our project, we can bring it together into a Semantic View definition.
 
 1. When you ran `sst init` a file called `/snowflake_semantic_models/semantc_views.yml` was created. You can remove the contents of that file.
@@ -280,7 +313,7 @@ semantic_views:
 ```
 And that's all there is to it! The power of SST is that by simply defining the tables you want included in a Semantic View, you can keep the definitions simple while the tools engine will compile all of the pieces. As you add dimensions, metrics, etc., to your dbt/SST models, they are propogated to Snowflake in your Semantic Views with no additional work.
 
-## Step 8 - Validate our Work
+## Step 11 - Validate our Work
 SST has a built in tool to validate that everything we have done is valid. Let's
 
 1. In your same terminal, run the following:
@@ -292,7 +325,7 @@ SST has a built in tool to validate that everything we have done is valid. Let's
 
     <img src="images/validation-success.png" alt="sst validate success message" >
 
-## Step 9 - Extract Metadata to Snowflake
+## Step 12 - Extract Metadata to Snowflake
 In order to support multiple environments (dev/prod/etc) and increase performance, we will be parsing, extracting and writing all of the metadata to Snowflake and creating some tables.
 
 1. In your same terminal, run the following:
@@ -311,7 +344,7 @@ In order to support multiple environments (dev/prod/etc) and increase performanc
     
     <img src="images/sm-tables-snowflake.png" alt="sm_ tables created in Snowflake" >
 
-## Step 10 - Generate the Semantic Views
+## Step 13 - Generate the Semantic Views
 The final step in this process is creating the semantic views.
 
 1. In the same terminal, run the following:
@@ -323,7 +356,7 @@ The final step in this process is creating the semantic views.
 
     <img src="images/sst-generate.png" alt="sst generate success message" >
 
-## Step 11 - Seeing what happened in Snowflake
+## Step 14 - Seeing what happened in Snowflake
 
 1. Going back to our Snowflake window, in your database explorer you should now see a semantic view called `customer_360` that was created:
 
@@ -337,7 +370,7 @@ The final step in this process is creating the semantic views.
 
     <img src="images/sv-information.png" alt="Semantic View information view" >
 
-## Step 12 - Querying the Semantic View
+## Step 15 - Querying the Semantic View
 
 1. Now you can use the Semantic View query syntax to query our view. Try this sample query:
     ```
