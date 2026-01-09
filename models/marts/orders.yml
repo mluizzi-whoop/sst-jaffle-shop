@@ -1,0 +1,435 @@
+version: 2
+models:
+  - name: orders
+    description: 'This model contains the orders for the Jaffle Shop. There is one row per order.'
+    config:
+      meta:
+        sst:
+          cortex_searchable: false
+          synonyms:
+            - order details
+            - customer purchase records
+            - sales transaction history
+            - order tracking information
+          primary_key: order_id
+          unique_keys: []
+
+    columns:
+      - name: order_id
+        description: 'The unique identifier for the order.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - order identifier
+                - order code
+                - order number
+                - order key
+              sample_values:
+                - a6ae01ba-cd7e-4ff7-963b-87e65c4f10a7
+                - e1339cc1-18d2-43b4-a0d4-936cb37a88c4
+                - 639f4f09-a17d-49e3-86dd-41aa9e95f484
+                - 81a3ccf3-a863-4dd0-b377-3a920c2734e3
+                - dd805e97-4e89-4024-8144-958c26e72dee
+                - 9f2ead7e-5d20-4246-9dc5-474639107f7b
+                - 33477c98-248e-40d3-bd1c-2d4f30d8d37d
+                - 8b7a8ccf-d3f5-42ce-a9e0-d60f7466b128
+                - f15271f0-1e9c-48e4-812b-656eafdd7e67
+                - d3f0559d-1d85-4dc1-b016-6478f4b19d65
+              is_enum: false
+
+      - name: location_id
+        description: 'The unique identifier for the location.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - location identifier
+                - location code
+                - location number
+                - location key
+              sample_values:
+                - 40e6ddd6-b8f6-4e17-8bd6-5e53966809d2
+                - 4b6c2304-2b9e-41e4-942a-cf11a1819378
+              is_enum: true
+
+      - name: customer_id
+        description: 'The unique identifier for the customer.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - customer identifier
+                - customer code
+                - customer number
+                - customer key
+              sample_values:
+                - 672a02fc-236c-4c57-9ef9-218b783ce0e3
+                - afdabd06-a2b4-497a-93b8-7bcf582b5d3b
+                - c6abaffa-11df-4987-9806-71dced92f534
+                - 33d208d7-91f2-4d70-9f75-c1bf87481c15
+                - 9a689679-4c75-46ba-92d3-6b5b0c51a34a
+                - 53ed5bac-fa7d-4b1d-a73c-6c2b9845c1d1
+                - 03410ea3-1e8a-40ef-9322-bc532f78f7ff
+                - d50199e3-7c9b-4921-9920-d234b5fc561a
+                - d47a83f3-a765-4a20-b40c-e0993cf00e4f
+                - cbda2de6-06db-4a9f-91af-cc36e8ba0bad
+              is_enum: false
+
+      - name: subtotal_cents
+        description: 'The subtotal of the order in cents.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - subtotal in cents
+                - subtotal amount in cents
+                - subtotal value in cents
+                - subtotal cents
+              sample_values:
+                - '8500'
+                - '7800'
+                - '5800'
+                - '2800'
+                - '8000'
+                - '2900'
+                - '9500'
+                - '7100'
+                - '7600'
+                - '7900'
+              is_enum: false
+
+      - name: tax_paid_cents
+        description: 'The tax paid for the order in cents.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - tax paid in cents
+                - tax amount in cents
+                - tax value in cents
+                - tax cents
+              sample_values:
+                - '306'
+                - '220'
+                - '570'
+                - '131'
+                - '438'
+                - '296'
+                - '497'
+                - '270'
+                - '78'
+                - '216'
+              is_enum: false
+
+      - name: order_total_cents
+        description: 'The total of the order in cents.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - order total in cents
+                - total order amount in cents
+                - total order value in cents
+                - order cents
+              sample_values:
+                - '3536'
+                - '3432'
+                - '6760'
+                - '5406'
+                - '8008'
+                - '3015'
+                - '4680'
+                - '5928'
+                - '3328'
+                - '3640'
+              is_enum: false
+
+      - name: subtotal
+        description: 'The subtotal of the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - subtotal amount
+                - subtotal value
+                - subtotal cost
+                - subtotal
+              sample_values:
+                - '91.0'
+                - '44.0'
+                - '78.0'
+                - '74.0'
+                - '58.0'
+                - '31.0'
+                - '40.0'
+                - '54.0'
+                - '69.0'
+                - '53.0'
+              is_enum: false
+
+      - name: tax_paid
+        description: 'The tax paid for the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - tax paid amount
+                - tax paid value
+                - tax paid cost
+                - tax paid
+              sample_values:
+                - '2.8'
+                - '1.92'
+                - '3.16'
+                - '2.27'
+                - '4.74'
+                - '4.8'
+                - '2.08'
+                - '2.94'
+                - '2.52'
+                - '5.7'
+              is_enum: false
+
+      - name: order_total
+        description: 'The total of the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - order total amount
+                - total order value
+                - total order cost
+                - order total
+              sample_values:
+                - '59.28'
+                - '30.15'
+                - '58.3'
+                - '67.6'
+                - '31.2'
+                - '40.27'
+                - '60.31'
+                - '65.72'
+                - '96.46'
+                - '85.85'
+              is_enum: false
+
+      - name: ordered_at
+        description: 'The date the order was placed.'
+        config:
+          meta:
+            sst:
+              column_type: time_dimension
+              data_type: TIMESTAMP_NTZ
+              synonyms:
+                - order timestamp
+                - order date and time
+                - order time
+                - order date
+              sample_values:
+                - '2025-01-08 00:00:00'
+                - '2024-12-28 00:00:00'
+                - '2024-12-26 00:00:00'
+                - '2025-05-20 00:00:00'
+                - '2025-06-22 00:00:00'
+                - '2025-06-21 00:00:00'
+                - '2025-02-26 00:00:00'
+                - '2025-04-15 00:00:00'
+                - '2025-08-06 00:00:00'
+                - '2025-06-20 00:00:00'
+              is_enum: false
+
+      - name: order_cost
+        description: 'The cost of the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - order cost amount
+                - order cost value
+                - order cost
+                - order expense
+              sample_values:
+                - '7.61'
+                - '19.53'
+                - '10.86'
+                - '14.49'
+                - '8.98'
+                - '3.77'
+                - '13.02'
+                - '10.0'
+                - '13.48'
+                - '6.29'
+              is_enum: false
+
+      - name: order_items_subtotal
+        description: 'The subtotal of the order items.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - order items subtotal
+                - items subtotal
+                - items total
+                - items cost
+              sample_values:
+                - '31.0'
+                - '40.0'
+                - '54.0'
+                - '69.0'
+                - '78.0'
+                - '74.0'
+                - '58.0'
+                - '91.0'
+                - '44.0'
+                - '53.0'
+              is_enum: false
+
+      - name: count_food_items
+        description: 'The number of food items in the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - food items count
+                - number of food items
+                - food items quantity
+                - food items number
+              sample_values:
+                - '4.0'
+                - '2.0'
+                - '3.0'
+                - '0.0'
+                - nan
+                - '1.0'
+                - '5.0'
+              is_enum: false
+
+      - name: count_drink_items
+        description: 'The number of drink items in the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - drink items count
+                - number of drink items
+                - drink items quantity
+                - drink items number
+              sample_values:
+                - '1.0'
+                - '5.0'
+                - '4.0'
+                - '2.0'
+                - '3.0'
+                - '0.0'
+                - nan
+              is_enum: false
+
+      - name: count_order_items
+        description: 'The number of order items in the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - order items count
+                - number of order items
+                - order items quantity
+                - order items number
+              sample_values:
+                - '1.0'
+                - '5.0'
+                - '10.0'
+                - '2.0'
+                - '3.0'
+                - '4.0'
+                - '6.0'
+                - '8.0'
+                - nan
+              is_enum: false
+
+      - name: is_food_order
+        description: 'Whether the order is a food order.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: BOOLEAN
+              synonyms:
+                - food order flag
+                - is food order
+                - food order indicator
+                - food order status
+              sample_values:
+                - 'False'
+                - 'True'
+              is_enum: true
+
+      - name: is_drink_order
+        description: 'Whether the order is a drink order.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: BOOLEAN
+              synonyms:
+                - drink order flag
+                - is drink order
+                - drink order indicator
+                - drink order status
+              sample_values:
+                - 'True'
+                - 'False'
+              is_enum: true
+
+      - name: customer_order_number
+        description: 'The number of the order for the customer.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - customer order number
+                - order number for customer
+                - customer order count
+                - customer order sequence
+              sample_values:
+                - '127'
+                - '123'
+                - '132'
+                - '166'
+                - '170'
+                - '160'
+                - '150'
+                - '192'
+                - '199'
+                - '185'
+              is_enum: false

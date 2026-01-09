@@ -1,0 +1,41 @@
+version: 2
+models:
+  - name: metricflow_time_spine
+    description: 'This model contains the time spine for the Jaffle Shop. There is one row per day.'
+    config:
+      meta:
+        sst:
+          cortex_searchable: false
+          synonyms:
+            - daily date records
+            - time dimension data
+            - date-based time spine
+            - daily time tracking
+          primary_key: date_day
+          unique_keys: []
+
+    columns:
+      - name: date_day
+        description: 'The date of the time spine.'
+        config:
+          meta:
+            sst:
+              column_type: time_dimension
+              data_type: DATE
+              synonyms:
+                - daily date
+                - date record
+                - day of record
+                - date entry
+              sample_values:
+                - '2025-08-12'
+                - '2023-03-20'
+                - '2016-12-18'
+                - '2022-01-02'
+                - '2017-03-08'
+                - '2017-02-27'
+                - '2019-11-24'
+                - '2021-07-02'
+                - '2020-03-21'
+                - '2018-09-13'
+              is_enum: false

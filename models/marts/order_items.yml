@@ -1,0 +1,221 @@
+version: 2
+models:
+  - name: order_items
+    description: 'This model contains the order items for the Jaffle Shop. There is one row per order item.'
+    config:
+      meta:
+        sst:
+          cortex_searchable: false
+          synonyms:
+            - order details
+            - purchase items
+            - sales order items
+            - order line items
+          primary_key: order_item_id
+          unique_keys: []
+
+    columns:
+      - name: order_item_id
+        description: 'The unique identifier for the order item.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - item identifier
+                - order item code
+                - item unique ID
+                - item ID
+              sample_values:
+                - b342065f-bf50-4738-9cab-7df715317d94
+                - 37ebe8f0-7438-4bf2-8f9f-79089f952f9a
+                - cb608cfa-5ac6-4815-bdc2-6470004204dc
+                - 35f5925a-2196-4347-ab17-6f8de3b3c5c5
+                - b84b6b8f-09c9-46c4-b3df-30e008a12937
+                - 9ae81426-ea82-463b-ab61-55c6c11658bc
+                - 4321974e-31c8-4efb-8301-3e34a13d81b5
+                - 42c2cfb9-f297-4458-8868-766c4e32f849
+                - 25471f4a-8998-46a4-8db4-d4a56ffab5b9
+                - 4b717a50-8440-4b9a-b798-ca6bdba087ec
+              is_enum: false
+
+      - name: order_id
+        description: 'The unique identifier for the order.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - order identifier
+                - order code
+                - order unique ID
+                - order ID
+              sample_values:
+                - 6ce387d8-9846-459d-b67b-64d8af83e386
+                - 26243a14-e416-4051-a0b2-c4d8349a1761
+                - e0bebebb-b0e8-4177-b9a7-29bee5ca94f8
+                - 44c30fea-d832-4607-93ab-b6548c82167a
+                - 0d39b5f2-27f7-4c5a-9593-8c26f621aeff
+                - 99f7b451-d226-475a-a977-d8e3334035a2
+                - baf952c7-98fa-4d8a-89d1-e0f1058a636c
+                - 6f2fe5f2-f17e-4a5a-a8e2-e8106f653efd
+                - f55b2705-5ce4-42d4-95e9-78def01769e4
+                - c78479c1-8f5f-4d72-aedd-9e9eea35243c
+              is_enum: false
+
+      - name: product_id
+        description: 'The unique identifier for the product.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - product identifier
+                - product code
+                - product unique ID
+                - product ID
+              sample_values:
+                - JAF-005
+                - BEV-002
+                - JAF-002
+                - BEV-004
+                - JAF-004
+                - JAF-001
+                - JAF-003
+                - BEV-005
+                - BEV-001
+                - BEV-003
+              is_enum: true
+
+      - name: ordered_at
+        description: 'The date the order item was ordered.'
+        config:
+          meta:
+            sst:
+              column_type: time_dimension
+              data_type: TIMESTAMP_NTZ
+              synonyms:
+                - order timestamp
+                - order date
+                - order time
+                - order date and time
+              sample_values:
+                - '2024-11-08 00:00:00'
+                - '2025-02-05 00:00:00'
+                - '2025-07-12 00:00:00'
+                - '2025-04-17 00:00:00'
+                - '2025-04-18 00:00:00'
+                - '2024-09-08 00:00:00'
+                - '2025-01-08 00:00:00'
+                - '2024-10-27 00:00:00'
+                - '2025-03-31 00:00:00'
+                - '2025-04-14 00:00:00'
+              is_enum: false
+
+      - name: product_name
+        description: 'The name of the product.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - product name
+                - item name
+                - product title
+                - item title
+              sample_values:
+                - doctor stew
+                - vanilla ice
+                - chai and mighty
+                - 'for richer or pourover '
+                - adele-ade
+                - tangaroo
+                - flame impala
+                - mel-bun
+                - nutellaphone who dis?
+                - the krautback
+              is_enum: true
+
+      - name: product_price
+        description: 'The price of the product.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - product cost
+                - item price
+                - product amount
+                - item amount
+              sample_values:
+                - '11.0'
+                - '7.0'
+                - '6.0'
+                - '5.0'
+                - '12.0'
+                - '4.0'
+                - '14.0'
+              is_enum: false
+
+      - name: is_food_item
+        description: 'Whether the product is a food item.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: BOOLEAN
+              synonyms:
+                - food item flag
+                - is food
+                - food indicator
+                - food status
+              sample_values:
+                - 'False'
+                - 'True'
+              is_enum: true
+
+      - name: is_drink_item
+        description: 'Whether the product is a drink item.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: BOOLEAN
+              synonyms:
+                - drink item flag
+                - is drink
+                - drink indicator
+                - drink status
+              sample_values:
+                - 'True'
+                - 'False'
+              is_enum: true
+
+      - name: supply_cost
+        description: 'The cost of the product.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - supply price
+                - supply amount
+                - supply cost
+                - supply expense
+              sample_values:
+                - '1.75'
+                - '0.63'
+                - '2.39'
+                - '1.21'
+                - '0.82'
+                - '2.51'
+                - '1.54'
+                - '3.43'
+                - '3.66'
+              is_enum: false

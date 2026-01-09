@@ -1,0 +1,164 @@
+version: 2
+models:
+  - name: stg_products
+    description: 'This model contains the products for the Jaffle Shop. There is one row per product.'
+    config:
+      meta:
+        sst:
+          cortex_searchable: false
+          synonyms:
+            - product details and types
+            - product information and descriptions
+            - product catalog data
+            - product names and types
+          primary_key: product_id
+          unique_keys: []
+
+    columns:
+      - name: product_id
+        description: 'The unique identifier for the product.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - product identifier
+                - product code
+                - item ID
+                - product number
+              sample_values:
+                - JAF-002
+                - BEV-005
+                - BEV-001
+                - JAF-005
+                - BEV-002
+                - BEV-003
+                - BEV-004
+                - JAF-004
+                - JAF-001
+                - JAF-003
+              is_enum: true
+
+      - name: product_name
+        description: 'The name of the product.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - product title
+                - item name
+                - product label
+                - item title
+              sample_values:
+                - nutellaphone who dis?
+                - vanilla ice
+                - flame impala
+                - mel-bun
+                - adele-ade
+                - chai and mighty
+                - the krautback
+                - tangaroo
+                - 'for richer or pourover '
+                - doctor stew
+              is_enum: true
+
+      - name: product_type
+        description: 'The type of product.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - product category
+                - item type
+                - product classification
+                - item classification
+              sample_values:
+                - jaffle
+                - beverage
+              is_enum: true
+
+      - name: product_description
+        description: 'The description of the product.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - product details
+                - item description
+                - product info
+                - item info
+              sample_values:
+                - house-made beef stew jaffle
+                - melon and minced beef bao, in a jaffle, savory and sweet
+                - nutella and banana jaffle
+                - iced coffee with house-made french vanilla syrup
+                - lamb and pork bratwurst with house-pickled cabbage sauerkraut and mustard
+                - daily selection of single estate beans for a delicious hot pourover
+                - a kiwi and lime agua fresca, hello from the other side of thirst
+                - "pulled pork and pineapple al pastor marinated in ghost pepper sauce, kevin parker's favorite! "
+                - oatmilk chai latte with protein boost
+                - mango and tangerine smoothie
+              is_enum: true
+
+      - name: product_price
+        description: 'The price of the product.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - item price
+                - product cost
+                - item cost
+                - product value
+              sample_values:
+                - '7.0'
+                - '11.0'
+                - '14.0'
+                - '12.0'
+                - '4.0'
+                - '6.0'
+                - '5.0'
+              is_enum: false
+
+      - name: is_food_item
+        description: 'Whether the product is a food item.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: BOOLEAN
+              synonyms:
+                - food item flag
+                - is food
+                - food indicator
+                - food status
+              sample_values:
+                - 'True'
+                - 'False'
+              is_enum: true
+
+      - name: is_drink_item
+        description: 'Whether the product is a drink item.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: BOOLEAN
+              synonyms:
+                - drink item flag
+                - is drink
+                - drink indicator
+                - drink status
+              sample_values:
+                - 'False'
+                - 'True'
+              is_enum: true

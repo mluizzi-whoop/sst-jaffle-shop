@@ -1,0 +1,233 @@
+version: 2
+models:
+  - name: customers
+    description: 'This model contains the customer data for the Jaffle Shop. There is one row per customer.'
+    config:
+      meta:
+        sst:
+          cortex_searchable: false
+          synonyms:
+            - customer order history
+            - customer purchase records
+            - customer lifetime orders
+            - customer transaction details
+          primary_key: customer_id
+          unique_keys: []
+
+    columns:
+      - name: customer_id
+        description: 'The unique identifier for the customer.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - customer unique identifier
+                - customer ID
+                - customer code
+                - customer key
+              sample_values:
+                - 9aaa8391-995f-4006-8413-c590098fc46a
+                - 4126c950-a88a-4305-895c-96d7e076897e
+                - 3785fc7c-35aa-4e40-b620-f54b10e8a832
+                - 352810e9-e0fe-4062-a808-83f47ad5f4d4
+                - 5b070f80-9227-43fd-951b-4c758d20070e
+                - 1a1e8918-e445-4bc0-8fa1-5a470711d51d
+                - e648e7c1-b5f5-4d67-b78c-7d41956f4eaf
+                - 94638355-4830-4837-8708-12531dc89dbf
+                - 425be648-8195-4636-880e-d86e4cd8e38f
+                - ff29ece6-95da-4800-acd2-b14950a339dd
+              is_enum: false
+
+      - name: customer_name
+        description: 'The name of the customer.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - customer full name
+                - customer name
+                - name of customer
+                - customer title
+              sample_values:
+                - Kathy Nichols MD
+                - Tyler Henderson
+                - Benjamin Williams
+                - Christopher Kim
+                - Michael Harris
+                - Dawn Williams
+                - Lawrence Mclaughlin
+                - Emily Perry
+                - Fred Gibson
+                - Pamela Lane
+              is_enum: false
+
+      - name: count_lifetime_orders
+        description: 'The total number of orders the customer has made.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - total orders
+                - lifetime order count
+                - total number of orders
+                - order quantity
+              sample_values:
+                - '201'
+                - '79'
+                - '173'
+                - '111'
+                - '121'
+                - '146'
+                - '102'
+                - '73'
+                - '41'
+                - '90'
+              is_enum: false
+
+      - name: first_ordered_at
+        description: 'The date of the customers first order.'
+        config:
+          meta:
+            sst:
+              column_type: time_dimension
+              data_type: TIMESTAMP_NTZ
+              synonyms:
+                - first order date
+                - initial order date
+                - first purchase date
+                - first order timestamp
+              sample_values:
+                - '2025-05-22 00:00:00'
+                - '2024-12-28 00:00:00'
+                - '2024-10-27 00:00:00'
+                - '2024-12-26 00:00:00'
+                - '2025-01-12 00:00:00'
+                - '2025-05-20 00:00:00'
+                - '2025-04-30 00:00:00'
+                - '2024-11-08 00:00:00'
+                - '2025-01-16 00:00:00'
+                - '2024-11-25 00:00:00'
+              is_enum: false
+
+      - name: last_ordered_at
+        description: 'The date of the customers last order.'
+        config:
+          meta:
+            sst:
+              column_type: time_dimension
+              data_type: TIMESTAMP_NTZ
+              synonyms:
+                - last order date
+                - most recent order date
+                - latest order date
+                - last purchase date
+              sample_values:
+                - '2025-06-18 00:00:00'
+                - '2025-08-08 00:00:00'
+                - '2025-08-19 00:00:00'
+                - '2025-08-23 00:00:00'
+                - '2025-08-13 00:00:00'
+                - '2025-05-13 00:00:00'
+                - '2025-06-12 00:00:00'
+                - '2025-06-13 00:00:00'
+                - '2025-08-21 00:00:00'
+                - '2025-07-29 00:00:00'
+              is_enum: false
+
+      - name: lifetime_spend_pretax
+        description: 'The total spend of the customer before tax.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - total spend before tax
+                - pretax spending
+                - total pretax amount
+                - pretax lifetime spend
+              sample_values:
+                - '850.0'
+                - '1069.0'
+                - '498.0'
+                - '370.0'
+                - '375.0'
+                - '91.0'
+                - '157.0'
+                - '1359.0'
+                - '319.0'
+                - '1606.0'
+              is_enum: false
+
+      - name: lifetime_tax_paid
+        description: 'The total tax paid by the customer.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - total tax paid
+                - lifetime tax amount
+                - total tax
+                - tax paid
+              sample_values:
+                - '65.71'
+                - '80.55'
+                - '28.14'
+                - '13.84'
+                - '70.26'
+                - '13.48'
+                - '24.64'
+                - '20.88'
+                - '17.5'
+                - '24.08'
+              is_enum: false
+
+      - name: lifetime_spend
+        description: 'The total spend of the customer.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - total spend
+                - lifetime spending
+                - total amount spent
+                - total expenditure
+              sample_values:
+                - '1171.3'
+                - '570.21'
+                - '578.24'
+                - '219.44'
+                - '30.16'
+                - '53.04'
+                - '127.92'
+                - '498.16'
+                - '234.0'
+                - '1702.23'
+              is_enum: false
+
+      - name: customer_type
+        description: 'The type of customer.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - customer category
+                - customer classification
+                - type of customer
+                - customer segment
+              sample_values:
+                - new
+                - returning
+              is_enum: true

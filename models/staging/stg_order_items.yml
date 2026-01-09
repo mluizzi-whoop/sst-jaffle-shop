@@ -1,0 +1,91 @@
+version: 2
+models:
+  - name: stg_order_items
+    description: 'This model contains the order items for the Jaffle Shop. There is one row per order item.'
+    config:
+      meta:
+        sst:
+          cortex_searchable: false
+          synonyms:
+            - order item details
+            - order line items
+            - order product information
+            - order item records
+          primary_key: order_item_id
+          unique_keys: []
+
+    columns:
+      - name: order_item_id
+        description: 'The unique identifier for the order item.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - order item identifier
+                - item ID
+                - order item code
+                - item unique ID
+              sample_values:
+                - 099a05af-77d4-41c9-9bb0-e1a8e523fc03
+                - 4c6a92fc-7b05-45a6-8049-1c15bbe0ece0
+                - 6592c956-e725-4179-b8de-a8206c854d5b
+                - db82aa13-357c-442e-8ec5-0c06f8973ae0
+                - 54fde117-8f8b-4d89-b498-5d2a34952fd5
+                - f8a756d7-08cc-4c70-8c4d-7cbc934783ed
+                - 5cdc7171-1338-4919-9327-ebbf243e0744
+                - 18494180-8a44-4220-b728-77781721a71f
+                - 697194fe-7ae4-4c54-925a-ac07bfb6de69
+                - 8cb4b43a-d969-4d31-97ff-ca94b9d86ef7
+              is_enum: false
+
+      - name: order_id
+        description: 'The unique identifier for the order.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - order identifier
+                - order code
+                - order unique ID
+                - order number
+              sample_values:
+                - 6ce387d8-9846-459d-b67b-64d8af83e386
+                - 26243a14-e416-4051-a0b2-c4d8349a1761
+                - e0bebebb-b0e8-4177-b9a7-29bee5ca94f8
+                - 44c30fea-d832-4607-93ab-b6548c82167a
+                - 6f2fe5f2-f17e-4a5a-a8e2-e8106f653efd
+                - f55b2705-5ce4-42d4-95e9-78def01769e4
+                - c78479c1-8f5f-4d72-aedd-9e9eea35243c
+                - d0667be3-d917-4d96-82f2-730ee260863d
+                - e8529c37-7086-401d-8078-c528a16212d0
+                - 2598f24c-f937-49f7-a250-87066617acb1
+              is_enum: false
+
+      - name: product_id
+        description: 'The unique identifier for the product.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - product identifier
+                - product code
+                - product unique ID
+                - item code
+              sample_values:
+                - BEV-002
+                - JAF-002
+                - BEV-003
+                - BEV-005
+                - BEV-001
+                - JAF-003
+                - BEV-004
+                - JAF-004
+                - JAF-001
+                - JAF-005
+              is_enum: true

@@ -1,0 +1,158 @@
+version: 2
+models:
+  - name: stg_supplies
+    description: 'This model contains the supplies for the Jaffle Shop. There is one row per supply.'
+    config:
+      meta:
+        sst:
+          cortex_searchable: false
+          synonyms:
+            - supply inventory details
+            - supply item information
+            - supply product data
+            - supply tracking records
+          primary_key: supply_uuid
+          unique_keys: []
+
+    columns:
+      - name: supply_uuid
+        description: 'The unique identifier for the supply.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - supply unique identifier
+                - supply UUID
+                - supply ID code
+                - supply identifier
+              sample_values:
+                - 6e910d5fccb03f71223d84887c3a37c4
+                - 74affa51ac1051a74a0e9e2573f84d75
+                - 456bf6d9597659cdf7cc73905d0776c9
+                - e742bfe88750e349b40480547747bb40
+                - 27714301ba8b6c825342849e215876b9
+                - 50cd3f32dc0abaea8ee327726c3cafbb
+                - de2daf744eb5b1586ce87485e5d0dc94
+                - 095e16444d40017b8eea8e6e2ca87280
+                - b9440c67a43ed212563b1e5c82c51932
+                - 8813821fc0db2713feba5e250fd8934c
+              is_enum: false
+
+      - name: supply_id
+        description: 'The unique identifier for the supply.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - supply code
+                - supply identifier
+                - supply number
+                - supply ID
+              sample_values:
+                - SUP-011
+                - SUP-012
+                - SUP-029
+                - SUP-019
+                - SUP-003
+                - SUP-021
+                - SUP-007
+                - SUP-028
+                - SUP-004
+                - SUP-022
+              is_enum: false
+
+      - name: product_id
+        description: 'The unique identifier for the product.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - product code
+                - product identifier
+                - product number
+                - product ID
+              sample_values:
+                - JAF-002
+                - BEV-005
+                - BEV-001
+                - JAF-005
+                - BEV-002
+                - BEV-003
+                - BEV-004
+                - JAF-004
+                - JAF-001
+                - JAF-003
+              is_enum: true
+
+      - name: supply_name
+        description: 'The name of the supply.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - supply name
+                - supply description
+                - supply item name
+                - supply product name
+              sample_values:
+                - beef stew
+                - house-pickled cabbage sauerkraut
+                - pineapple
+                - biodegradable straw
+                - 16oz compostable clear cup
+                - coffee
+                - serving boat
+                - mustard
+                - tangerine
+                - kiwi
+              is_enum: false
+
+      - name: supply_cost
+        description: 'The cost of the supply.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - supply cost
+                - supply price
+                - supply amount
+                - supply value
+              sample_values:
+                - '0.43'
+                - '0.2'
+                - '1.69'
+                - '0.52'
+                - '0.36'
+                - '0.07'
+                - '0.98'
+                - '0.72'
+                - '0.32'
+                - '0.33'
+              is_enum: false
+
+      - name: is_perishable_supply
+        description: 'Whether the supply is perishable.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: BOOLEAN
+              synonyms:
+                - perishable status
+                - perishable indicator
+                - perishable flag
+                - perishable status flag
+              sample_values:
+                - 'False'
+                - 'True'
+              is_enum: true

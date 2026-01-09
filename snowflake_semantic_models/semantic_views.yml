@@ -1,0 +1,78 @@
+semantic_views:
+  # ===========================================================================
+  # SALES & CUSTOMER ANALYTICS
+  # ===========================================================================
+  - name: jaffle_shop_sales_analytics
+    description: |
+      Sales and customer analytics for the Jaffle Shop. This view enables comprehensive 
+      analysis of order patterns, revenue trends, and customer behavior across all locations.
+      
+      Key use cases:
+      - Revenue analysis: total sales, average order value, and revenue by location
+      - Customer insights: lifetime value, order frequency, new vs returning customers
+      - Geographic performance: compare sales and customer metrics across store locations
+      - Time-based analysis: daily, weekly, and monthly sales trends using order timestamps
+      - Tax analysis: tax collected by location based on local tax rates
+      
+      This view joins orders with customer profiles and location details, making it ideal
+      for sales dashboards, customer segmentation, and location performance reviews.
+    tables:
+      - {{ table('orders') }}
+      - {{ table('customers') }}
+      - {{ table('locations') }}
+
+  # ===========================================================================
+  # PRODUCT & MENU PERFORMANCE
+  # ===========================================================================
+  - name: jaffle_shop_menu_analytics
+    description: |
+      Product and menu performance analytics for the Jaffle Shop. This view provides 
+      detailed insights into product sales, menu item popularity, and cost margins.
+      
+      Key use cases:
+      - Product performance: identify best-selling jaffles and beverages
+      - Menu mix analysis: compare food vs drink sales volume and revenue
+      - Margin analysis: product revenue vs supply costs for profitability insights
+      - Ingredient tracking: understand which supplies are used and their costs
+      - Menu optimization: identify high-margin products and underperformers
+      
+      This view combines order-level item details with the product catalog and supply 
+      cost information. Use it for menu engineering, pricing decisions, and inventory
+      planning based on product popularity and ingredient usage.
+    tables:
+      - {{ table('order_items') }}
+      - {{ table('products') }}
+      - {{ table('supplies') }}
+
+  # ===========================================================================
+  # COMPLETE BUSINESS INTELLIGENCE
+  # ===========================================================================
+  - name: jaffle_shop_complete
+    description: |
+      Comprehensive business intelligence view combining all Jaffle Shop data domains.
+      This unified view enables cross-functional analysis spanning sales, customers,
+      products, locations, and supply chain.
+      
+      Key use cases:
+      - Executive dashboards: holistic KPIs across all business dimensions
+      - Customer journey analysis: from first order to lifetime value with product preferences
+      - Location profitability: revenue, costs, and margins by store
+      - Product-customer affinity: which customer segments prefer which menu items
+      - Operational efficiency: order volumes, item counts, and supply costs
+      - Cohort analysis: customer behavior over time with product-level detail
+      
+      This view includes all six core tables with full relationship connectivity:
+      - Orders link to customers (who bought) and locations (where they bought)
+      - Order items link to orders (transaction context) and products (what was bought)
+      - Supplies link to products (cost breakdown per menu item)
+      
+      Use this view when you need maximum flexibility for ad-hoc analysis, complex
+      joins across domains, or when building comprehensive reports that span multiple
+      business areas.
+    tables:
+      - {{ table('orders') }}
+      - {{ table('order_items') }}
+      - {{ table('customers') }}
+      - {{ table('products') }}
+      - {{ table('locations') }}
+      - {{ table('supplies') }}

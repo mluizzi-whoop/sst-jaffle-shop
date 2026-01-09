@@ -1,0 +1,258 @@
+version: 2
+models:
+  - name: stg_orders
+    description: 'This model contains the orders for the Jaffle Shop. There is one row per order.'
+    config:
+      meta:
+        sst:
+          cortex_searchable: false
+          synonyms:
+            - order details
+            - order information
+            - order records
+            - order history
+          primary_key: order_id
+          unique_keys: []
+
+    columns:
+      - name: order_id
+        description: 'The unique identifier for the order.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - order identifier
+                - order code
+                - order number
+                - order key
+              sample_values:
+                - 391340a1-03ec-4458-827f-43e43633ffff
+                - b6edce56-a9dd-4cb0-a864-68f49ac5c669
+                - 2e1be941-062e-4676-8eb3-fd305bb1150a
+                - e5f1e8ca-88bb-41a2-a897-a6b2975f7e81
+                - 3247704b-6ea3-4152-92fd-22211aa9008f
+                - 349dfeda-69da-4fbf-b15e-e35ab1d7f41e
+                - 6bbf0846-6f67-4f8a-9636-f80b21e70fa5
+                - a2800644-e35f-40bb-a59a-b8544e6719c2
+                - 84e3a17e-b64a-4032-9c60-30ae30ec9cd8
+                - 7cc08048-31c6-49ad-a43c-ef97cd5b93a8
+              is_enum: false
+
+      - name: location_id
+        description: 'The unique identifier for the location.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - location identifier
+                - location code
+                - location number
+                - location key
+              sample_values:
+                - 40e6ddd6-b8f6-4e17-8bd6-5e53966809d2
+                - 4b6c2304-2b9e-41e4-942a-cf11a1819378
+              is_enum: true
+
+      - name: customer_id
+        description: 'The unique identifier for the customer.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - customer identifier
+                - customer code
+                - customer number
+                - customer key
+              sample_values:
+                - 019bbbbd-bb75-49d2-8d74-d1c01012bd21
+                - b81636bb-71f3-4ace-8eb7-628abe1eac07
+                - 2f771a5a-3d76-48e3-985b-b7e91e092c46
+                - 3a1577eb-7860-498f-936a-da13e16cbd8c
+                - 61004774-fb70-403c-ae81-a1e9cd187146
+                - 3dc87d1c-7942-471e-b947-26b7ec78cedb
+                - 1076f00e-5dd1-41d1-b2a5-0c59e18a5310
+                - 7755a749-3460-4f0c-a33c-428dccd20885
+                - 284f711a-5e5a-4929-bb5d-5ddba9a4a773
+                - 41c59ae8-bcd0-4d00-b8e9-bfaa0ce5913b
+              is_enum: false
+
+      - name: subtotal_cents
+        description: 'The subtotal of the order in cents.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - subtotal in cents
+                - subtotal amount in cents
+                - subtotal value in cents
+                - subtotal cents
+              sample_values:
+                - '8000'
+                - '3900'
+                - '9500'
+                - '9000'
+                - '3800'
+                - '7900'
+                - '3700'
+                - '4700'
+                - '5300'
+                - '6900'
+              is_enum: false
+
+      - name: tax_paid_cents
+        description: 'The tax paid for the order in cents.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - tax paid in cents
+                - tax amount in cents
+                - tax value in cents
+                - tax cents
+              sample_values:
+                - '172'
+                - '65'
+                - '126'
+                - '120'
+                - '68'
+                - '263'
+                - '396'
+                - '198'
+                - '284'
+                - '131'
+              is_enum: false
+
+      - name: order_total_cents
+        description: 'The total of the order in cents.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - order total in cents
+                - total order amount in cents
+                - total order value in cents
+                - order cents
+              sample_values:
+                - '4056'
+                - '7632'
+                - '3848'
+                - '8944'
+                - '5512'
+                - '4770'
+                - '8216'
+                - '5936'
+                - '8840'
+                - '3286'
+              is_enum: false
+
+      - name: subtotal
+        description: 'The subtotal of the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - subtotal amount
+                - subtotal value
+                - subtotal cost
+                - subtotal price
+              sample_values:
+                - '33.0'
+                - '87.0'
+                - '37.0'
+                - '35.0'
+                - '43.0'
+                - '38.0'
+                - '56.0'
+                - '26.0'
+                - '78.0'
+                - '74.0'
+              is_enum: false
+
+      - name: tax_paid
+        description: 'The tax paid for the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - tax paid amount
+                - tax paid value
+                - tax paid cost
+                - tax paid price
+              sample_values:
+                - '1.38'
+                - '1.31'
+                - '2.7'
+                - '4.32'
+                - '1.72'
+                - '2.46'
+                - '3.96'
+                - '1.52'
+                - '3.18'
+                - '2.28'
+              is_enum: false
+
+      - name: order_total
+        description: 'The total of the order.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - order total amount
+                - total order value
+                - total order cost
+                - total order price
+              sample_values:
+                - '28.08'
+                - '35.36'
+                - '19.76'
+                - '75.92'
+                - '87.97'
+                - '67.84'
+                - '84.8'
+                - '26.0'
+                - '78.0'
+                - '73.13'
+              is_enum: false
+
+      - name: ordered_at
+        description: 'The date the order was placed.'
+        config:
+          meta:
+            sst:
+              column_type: time_dimension
+              data_type: TIMESTAMP_NTZ
+              synonyms:
+                - order timestamp
+                - order date
+                - order time
+                - order date and time
+              sample_values:
+                - '2024-10-04 00:00:00'
+                - '2024-09-14 00:00:00'
+                - '2024-09-18 00:00:00'
+                - '2024-09-26 00:00:00'
+                - '2024-09-29 00:00:00'
+                - '2024-09-02 00:00:00'
+                - '2024-10-06 00:00:00'
+                - '2024-09-04 00:00:00'
+                - '2024-09-22 00:00:00'
+                - '2024-09-19 00:00:00'
+              is_enum: false
