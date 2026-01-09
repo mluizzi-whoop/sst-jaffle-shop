@@ -4,6 +4,15 @@ This is an educational project designed to teach you how to use [Snowflake Seman
 
 This repository is a fork of the original [Jaffle Shop](https://github.com/dbt-labs/jaffle-shop) project. If you're interested in learning dbt without SST, please refer to the [dbt Labs supported version](https://github.com/dbt-labs/jaffle-shop).
 
+## Branch Structure
+
+| Branch | Description |
+|--------|-------------|
+| **`main`** | Clean slate version of the project. Use this branch to follow along with the tutorial and build everything from scratch. |
+| **`complete-project`** | Fully implemented version with all semantic models, metrics, relationships, and semantic views already built out. Great for reference or integration testing SST. |
+
+> **Tip:** If you're learning SST, start with `main`. If you're testing SST functionality or want to see a complete implementation, use `complete-project`.
+
 ## About Snowflake Semantic Tools
 
 [Snowflake Semantic Tools](https://github.com/WhoopInc/snowflake-semantic-tools) is an open-source project developed by [WHOOP](https://whoop.com) that makes the Snowflake Semantic View creation process as close to the Business Analyst workflow as possible—all within dbt. This project is published on [PyPI](https://pypi.org/project/snowflake-semantic-tools/).
