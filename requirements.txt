@@ -1,2 +1,2 @@
-snowflake-semantic-tools>=0.2.0
+snowflake-semantic-tools>=0.2.2
 dbt-snowflake>=1.11.0
