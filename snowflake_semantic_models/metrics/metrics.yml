@@ -5,8 +5,8 @@ snowflake_metrics:
   - name: total_orders
     description: Total number of orders placed
     tables:
-      - {{ table('orders') }}
-    expr: COUNT(DISTINCT {{ column('orders', 'order_id') }})
+      - {{ ref('orders') }}
+    expr: COUNT(DISTINCT {{ ref('orders', 'order_id') }})
     synonyms:
       - order_count
       - number_of_orders
@@ -14,8 +14,8 @@ snowflake_metrics:
   - name: total_revenue
     description: Total revenue from all orders (including tax)
     tables:
-      - {{ table('orders') }}
-    expr: SUM({{ column('orders', 'order_total') }})
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'order_total') }})
     synonyms:
       - gross_revenue
       - total_sales
@@ -24,8 +24,8 @@ snowflake_metrics:
   - name: total_subtotal
     description: Total revenue before tax from all orders
     tables:
-      - {{ table('orders') }}
-    expr: SUM({{ column('orders', 'subtotal') }})
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'subtotal') }})
     synonyms:
       - pretax_revenue
       - revenue_before_tax
@@ -33,8 +33,8 @@ snowflake_metrics:
   - name: total_tax_collected
     description: Total tax collected from all orders
     tables:
-      - {{ table('orders') }}
-    expr: SUM({{ column('orders', 'tax_paid') }})
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'tax_paid') }})
     synonyms:
       - tax_revenue
       - taxes_collected
@@ -42,8 +42,8 @@ snowflake_metrics:
   - name: total_order_cost
     description: Total cost of goods sold (supplies) for all orders
     tables:
-      - {{ table('orders') }}
-    expr: SUM({{ column('orders', 'order_cost') }})
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'order_cost') }})
     synonyms:
       - cogs
       - cost_of_goods_sold
@@ -52,8 +52,8 @@ snowflake_metrics:
   - name: total_gross_profit
     description: Total gross profit (revenue minus cost of goods sold)
     tables:
-      - {{ table('orders') }}
-    expr: SUM({{ column('orders', 'subtotal') }}) - SUM({{ column('orders', 'order_cost') }})
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'subtotal') }}) - SUM({{ ref('orders', 'order_cost') }})
     synonyms:
       - gross_margin
       - profit_before_tax
@@ -61,8 +61,8 @@ snowflake_metrics:
   - name: average_order_value
     description: Average order value (total including tax)
     tables:
-      - {{ table('orders') }}
-    expr: AVG({{ column('orders', 'order_total') }})
+      - {{ ref('orders') }}
+    expr: AVG({{ ref('orders', 'order_total') }})
     synonyms:
       - aov
       - avg_order_value
@@ -71,8 +71,8 @@ snowflake_metrics:
   - name: average_order_subtotal
     description: Average order subtotal (before tax)
     tables:
-      - {{ table('orders') }}
-    expr: AVG({{ column('orders', 'subtotal') }})
+      - {{ ref('orders') }}
+    expr: AVG({{ ref('orders', 'subtotal') }})
     synonyms:
       - avg_pretax_order
       - mean_subtotal
@@ -80,8 +80,8 @@ snowflake_metrics:
   - name: total_food_items_ordered
     description: Total number of food items ordered across all orders
     tables:
-      - {{ table('orders') }}
-    expr: SUM({{ column('orders', 'count_food_items') }})
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'count_food_items') }})
     synonyms:
       - food_item_count
       - total_food_orders
@@ -89,8 +89,8 @@ snowflake_metrics:
   - name: total_drink_items_ordered
     description: Total number of drink items ordered across all orders
     tables:
-      - {{ table('orders') }}
-    expr: SUM({{ column('orders', 'count_drink_items') }})
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'count_drink_items') }})
     synonyms:
       - drink_item_count
       - total_drink_orders
@@ -98,8 +98,8 @@ snowflake_metrics:
   - name: total_items_ordered
     description: Total number of items ordered across all orders
     tables:
-      - {{ table('orders') }}
-    expr: SUM({{ column('orders', 'count_order_items') }})
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'count_order_items') }})
     synonyms:
       - item_count
       - total_items
@@ -107,9 +107,9 @@ snowflake_metrics:
   - name: food_order_percentage
     description: Percentage of orders that contain food items
     tables:
-      - {{ table('orders') }}
+      - {{ ref('orders') }}
     expr: |
-      COUNT(CASE WHEN {{ column('orders', 'is_food_order') }} = TRUE THEN 1 END) * 100.0 /
+      COUNT(CASE WHEN {{ ref('orders', 'is_food_order') }} = TRUE THEN 1 END) * 100.0 /
       NULLIF(COUNT(*), 0)
     synonyms:
       - pct_food_orders
@@ -118,9 +118,9 @@ snowflake_metrics:
   - name: drink_order_percentage
     description: Percentage of orders that contain drink items
     tables:
-      - {{ table('orders') }}
+      - {{ ref('orders') }}
     expr: |
-      COUNT(CASE WHEN {{ column('orders', 'is_drink_order') }} = TRUE THEN 1 END) * 100.0 /
+      COUNT(CASE WHEN {{ ref('orders', 'is_drink_order') }} = TRUE THEN 1 END) * 100.0 /
       NULLIF(COUNT(*), 0)
     synonyms:
       - pct_drink_orders
@@ -129,10 +129,10 @@ snowflake_metrics:
   - name: gross_profit_margin
     description: Gross profit margin percentage (gross profit / revenue)
     tables:
-      - {{ table('orders') }}
+      - {{ ref('orders') }}
     expr: |
-      (SUM({{ column('orders', 'subtotal') }}) - SUM({{ column('orders', 'order_cost') }})) * 100.0 /
-      NULLIF(SUM({{ column('orders', 'subtotal') }}), 0)
+      (SUM({{ ref('orders', 'subtotal') }}) - SUM({{ ref('orders', 'order_cost') }})) * 100.0 /
+      NULLIF(SUM({{ ref('orders', 'subtotal') }}), 0)
     synonyms:
       - profit_margin
       - margin_percentage
@@ -143,8 +143,8 @@ snowflake_metrics:
   - name: total_customers
     description: Total number of unique customers
     tables:
-      - {{ table('customers') }}
-    expr: COUNT(DISTINCT {{ column('customers', 'customer_id') }})
+      - {{ ref('customers') }}
+    expr: COUNT(DISTINCT {{ ref('customers', 'customer_id') }})
     synonyms:
       - customer_count
       - unique_customers
@@ -153,8 +153,8 @@ snowflake_metrics:
   - name: total_customer_lifetime_spend
     description: Total lifetime spend across all customers
     tables:
-      - {{ table('customers') }}
-    expr: SUM({{ column('customers', 'lifetime_spend') }})
+      - {{ ref('customers') }}
+    expr: SUM({{ ref('customers', 'lifetime_spend') }})
     synonyms:
       - total_ltv
       - aggregate_customer_value
@@ -162,8 +162,8 @@ snowflake_metrics:
   - name: average_customer_lifetime_spend
     description: Average lifetime spend per customer
     tables:
-      - {{ table('customers') }}
-    expr: AVG({{ column('customers', 'lifetime_spend') }})
+      - {{ ref('customers') }}
+    expr: AVG({{ ref('customers', 'lifetime_spend') }})
     synonyms:
       - avg_ltv
       - average_customer_value
@@ -172,8 +172,8 @@ snowflake_metrics:
   - name: average_orders_per_customer
     description: Average number of orders per customer
     tables:
-      - {{ table('customers') }}
-    expr: AVG({{ column('customers', 'count_lifetime_orders') }})
+      - {{ ref('customers') }}
+    expr: AVG({{ ref('customers', 'count_lifetime_orders') }})
     synonyms:
       - avg_order_frequency
       - orders_per_customer
@@ -181,8 +181,8 @@ snowflake_metrics:
   - name: new_customer_count
     description: Number of new customers
     tables:
-      - {{ table('customers') }}
-    expr: COUNT(CASE WHEN {{ column('customers', 'customer_type') }} = 'new' THEN 1 END)
+      - {{ ref('customers') }}
+    expr: COUNT(CASE WHEN {{ ref('customers', 'customer_type') }} = 'new' THEN 1 END)
     synonyms:
       - new_customers
       - first_time_customers
@@ -190,8 +190,8 @@ snowflake_metrics:
   - name: returning_customer_count
     description: Number of returning customers
     tables:
-      - {{ table('customers') }}
-    expr: COUNT(CASE WHEN {{ column('customers', 'customer_type') }} = 'returning' THEN 1 END)
+      - {{ ref('customers') }}
+    expr: COUNT(CASE WHEN {{ ref('customers', 'customer_type') }} = 'returning' THEN 1 END)
     synonyms:
       - repeat_customers
       - loyal_customers
@@ -199,9 +199,9 @@ snowflake_metrics:
   - name: returning_customer_percentage
     description: Percentage of customers who are returning customers
     tables:
-      - {{ table('customers') }}
+      - {{ ref('customers') }}
     expr: |
-      COUNT(CASE WHEN {{ column('customers', 'customer_type') }} = 'returning' THEN 1 END) * 100.0 /
+      COUNT(CASE WHEN {{ ref('customers', 'customer_type') }} = 'returning' THEN 1 END) * 100.0 /
       NULLIF(COUNT(*), 0)
     synonyms:
       - retention_rate
@@ -210,8 +210,8 @@ snowflake_metrics:
   - name: average_customer_lifetime_tax
     description: Average lifetime tax paid per customer
     tables:
-      - {{ table('customers') }}
-    expr: AVG({{ column('customers', 'lifetime_tax_paid') }})
+      - {{ ref('customers') }}
+    expr: AVG({{ ref('customers', 'lifetime_tax_paid') }})
     synonyms:
       - avg_tax_per_customer
 
@@ -221,8 +221,8 @@ snowflake_metrics:
   - name: total_order_items
     description: Total number of individual order items sold
     tables:
-      - {{ table('order_items') }}
-    expr: COUNT({{ column('order_items', 'order_item_id') }})
+      - {{ ref('order_items') }}
+    expr: COUNT({{ ref('order_items', 'order_item_id') }})
     synonyms:
       - items_sold
       - line_items_count
@@ -230,8 +230,8 @@ snowflake_metrics:
   - name: total_product_revenue
     description: Total revenue from product sales (sum of product prices)
     tables:
-      - {{ table('order_items') }}
-    expr: SUM({{ column('order_items', 'product_price') }})
+      - {{ ref('order_items') }}
+    expr: SUM({{ ref('order_items', 'product_price') }})
     synonyms:
       - product_sales
       - item_revenue
@@ -239,8 +239,8 @@ snowflake_metrics:
   - name: total_supply_cost
     description: Total cost of supplies for all order items
     tables:
-      - {{ table('order_items') }}
-    expr: SUM({{ column('order_items', 'supply_cost') }})
+      - {{ ref('order_items') }}
+    expr: SUM({{ ref('order_items', 'supply_cost') }})
     synonyms:
       - item_cost
       - supply_expenses
@@ -248,8 +248,8 @@ snowflake_metrics:
   - name: average_product_price
     description: Average price per product sold
     tables:
-      - {{ table('order_items') }}
-    expr: AVG({{ column('order_items', 'product_price') }})
+      - {{ ref('order_items') }}
+    expr: AVG({{ ref('order_items', 'product_price') }})
     synonyms:
       - avg_item_price
       - mean_product_price
@@ -257,8 +257,8 @@ snowflake_metrics:
   - name: food_items_sold
     description: Total number of food items sold
     tables:
-      - {{ table('order_items') }}
-    expr: COUNT(CASE WHEN {{ column('order_items', 'is_food_item') }} = TRUE THEN 1 END)
+      - {{ ref('order_items') }}
+    expr: COUNT(CASE WHEN {{ ref('order_items', 'is_food_item') }} = TRUE THEN 1 END)
     synonyms:
       - food_sales_count
       - jaffles_sold
@@ -266,8 +266,8 @@ snowflake_metrics:
   - name: drink_items_sold
     description: Total number of drink items sold
     tables:
-      - {{ table('order_items') }}
-    expr: COUNT(CASE WHEN {{ column('order_items', 'is_drink_item') }} = TRUE THEN 1 END)
+      - {{ ref('order_items') }}
+    expr: COUNT(CASE WHEN {{ ref('order_items', 'is_drink_item') }} = TRUE THEN 1 END)
     synonyms:
       - drink_sales_count
       - beverages_sold
@@ -275,8 +275,8 @@ snowflake_metrics:
   - name: food_revenue
     description: Total revenue from food items
     tables:
-      - {{ table('order_items') }}
-    expr: SUM(CASE WHEN {{ column('order_items', 'is_food_item') }} = TRUE THEN {{ column('order_items', 'product_price') }} ELSE 0 END)
+      - {{ ref('order_items') }}
+    expr: SUM(CASE WHEN {{ ref('order_items', 'is_food_item') }} = TRUE THEN {{ ref('order_items', 'product_price') }} ELSE 0 END)
     synonyms:
       - jaffle_revenue
       - food_sales
@@ -284,8 +284,8 @@ snowflake_metrics:
   - name: drink_revenue
     description: Total revenue from drink items
     tables:
-      - {{ table('order_items') }}
-    expr: SUM(CASE WHEN {{ column('order_items', 'is_drink_item') }} = TRUE THEN {{ column('order_items', 'product_price') }} ELSE 0 END)
+      - {{ ref('order_items') }}
+    expr: SUM(CASE WHEN {{ ref('order_items', 'is_drink_item') }} = TRUE THEN {{ ref('order_items', 'product_price') }} ELSE 0 END)
     synonyms:
       - beverage_revenue
       - drink_sales
@@ -296,8 +296,8 @@ snowflake_metrics:
   - name: total_products
     description: Total number of products in the catalog
     tables:
-      - {{ table('products') }}
-    expr: COUNT(DISTINCT {{ column('products', 'product_id') }})
+      - {{ ref('products') }}
+    expr: COUNT(DISTINCT {{ ref('products', 'product_id') }})
     synonyms:
       - product_count
       - menu_items
@@ -305,16 +305,16 @@ snowflake_metrics:
   - name: average_product_catalog_price
     description: Average price of products in the catalog
     tables:
-      - {{ table('products') }}
-    expr: AVG({{ column('products', 'product_price') }})
+      - {{ ref('products') }}
+    expr: AVG({{ ref('products', 'product_price') }})
     synonyms:
       - avg_menu_price
 
   - name: food_product_count
     description: Number of food products (jaffles) in the catalog
     tables:
-      - {{ table('products') }}
-    expr: COUNT(CASE WHEN {{ column('products', 'is_food_item') }} = TRUE THEN 1 END)
+      - {{ ref('products') }}
+    expr: COUNT(CASE WHEN {{ ref('products', 'is_food_item') }} = TRUE THEN 1 END)
     synonyms:
       - jaffle_count
       - food_menu_items
@@ -322,8 +322,8 @@ snowflake_metrics:
   - name: drink_product_count
     description: Number of drink products (beverages) in the catalog
     tables:
-      - {{ table('products') }}
-    expr: COUNT(CASE WHEN {{ column('products', 'is_drink_item') }} = TRUE THEN 1 END)
+      - {{ ref('products') }}
+    expr: COUNT(CASE WHEN {{ ref('products', 'is_drink_item') }} = TRUE THEN 1 END)
     synonyms:
       - beverage_count
       - drink_menu_items
@@ -334,8 +334,8 @@ snowflake_metrics:
   - name: total_locations
     description: Total number of Jaffle Shop locations
     tables:
-      - {{ table('locations') }}
-    expr: COUNT(DISTINCT {{ column('locations', 'location_id') }})
+      - {{ ref('locations') }}
+    expr: COUNT(DISTINCT {{ ref('locations', 'location_id') }})
     synonyms:
       - store_count
       - number_of_stores
@@ -343,8 +343,8 @@ snowflake_metrics:
   - name: average_tax_rate
     description: Average tax rate across all locations
     tables:
-      - {{ table('locations') }}
-    expr: AVG({{ column('locations', 'tax_rate') }})
+      - {{ ref('locations') }}
+    expr: AVG({{ ref('locations', 'tax_rate') }})
     synonyms:
       - avg_tax_rate
       - mean_tax_rate
@@ -355,8 +355,8 @@ snowflake_metrics:
   - name: total_supplies
     description: Total number of unique supplies used
     tables:
-      - {{ table('supplies') }}
-    expr: COUNT(DISTINCT {{ column('supplies', 'supply_id') }})
+      - {{ ref('supplies') }}
+    expr: COUNT(DISTINCT {{ ref('supplies', 'supply_id') }})
     synonyms:
       - supply_count
       - ingredient_count
@@ -364,8 +364,8 @@ snowflake_metrics:
   - name: total_supply_catalog_cost
     description: Total cost of all supplies in the catalog
     tables:
-      - {{ table('supplies') }}
-    expr: SUM({{ column('supplies', 'supply_cost') }})
+      - {{ ref('supplies') }}
+    expr: SUM({{ ref('supplies', 'supply_cost') }})
     synonyms:
       - supply_expenses
       - ingredient_costs
@@ -373,23 +373,23 @@ snowflake_metrics:
   - name: average_supply_cost
     description: Average cost per supply item
     tables:
-      - {{ table('supplies') }}
-    expr: AVG({{ column('supplies', 'supply_cost') }})
+      - {{ ref('supplies') }}
+    expr: AVG({{ ref('supplies', 'supply_cost') }})
     synonyms:
       - avg_ingredient_cost
 
   - name: perishable_supply_count
     description: Number of perishable supplies
     tables:
-      - {{ table('supplies') }}
-    expr: COUNT(CASE WHEN {{ column('supplies', 'is_perishable_supply') }} = TRUE THEN 1 END)
+      - {{ ref('supplies') }}
+    expr: COUNT(CASE WHEN {{ ref('supplies', 'is_perishable_supply') }} = TRUE THEN 1 END)
     synonyms:
       - perishables_count
 
   - name: non_perishable_supply_count
     description: Number of non-perishable supplies
     tables:
-      - {{ table('supplies') }}
-    expr: COUNT(CASE WHEN {{ column('supplies', 'is_perishable_supply') }} = FALSE THEN 1 END)
+      - {{ ref('supplies') }}
+    expr: COUNT(CASE WHEN {{ ref('supplies', 'is_perishable_supply') }} = FALSE THEN 1 END)
     synonyms:
       - non_perishables_count

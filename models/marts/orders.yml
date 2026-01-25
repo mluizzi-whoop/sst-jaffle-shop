@@ -7,8 +7,8 @@ models:
         sst:
           cortex_searchable: false
           synonyms:
-            - order details
-            - customer purchase records
+            - order records
+            - purchase transactions
             - sales transaction history
             - order tracking information
           primary_key: order_id

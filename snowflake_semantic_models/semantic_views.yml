@@ -17,9 +17,11 @@ semantic_views:
       This view joins orders with customer profiles and location details, making it ideal
       for sales dashboards, customer segmentation, and location performance reviews.
     tables:
-      - {{ table('orders') }}
-      - {{ table('customers') }}
-      - {{ table('locations') }}
+      - {{ ref('orders') }}
+      - {{ ref('customers') }}
+      - {{ ref('locations') }}
+    custom_instructions:
+      - {{ custom_instructions('jaffle_shop_business_rules') }}
 
   # ===========================================================================
   # PRODUCT & MENU PERFORMANCE
@@ -40,9 +42,11 @@ semantic_views:
       cost information. Use it for menu engineering, pricing decisions, and inventory
       planning based on product popularity and ingredient usage.
     tables:
-      - {{ table('order_items') }}
-      - {{ table('products') }}
-      - {{ table('supplies') }}
+      - {{ ref('order_items') }}
+      - {{ ref('products') }}
+      - {{ ref('supplies') }}
+    custom_instructions:
+      - {{ custom_instructions('menu_analytics_guidance') }}
 
   # ===========================================================================
   # COMPLETE BUSINESS INTELLIGENCE
@@ -70,9 +74,12 @@ semantic_views:
       joins across domains, or when building comprehensive reports that span multiple
       business areas.
     tables:
-      - {{ table('orders') }}
-      - {{ table('order_items') }}
-      - {{ table('customers') }}
-      - {{ table('products') }}
-      - {{ table('locations') }}
-      - {{ table('supplies') }}
+      - {{ ref('orders') }}
+      - {{ ref('order_items') }}
+      - {{ ref('customers') }}
+      - {{ ref('products') }}
+      - {{ ref('locations') }}
+      - {{ ref('supplies') }}
+    custom_instructions:
+      - {{ custom_instructions('jaffle_shop_business_rules') }}
+      - {{ custom_instructions('menu_analytics_guidance') }}

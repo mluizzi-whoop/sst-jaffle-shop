@@ -12,18 +12,18 @@ snowflake_relationships:
   # Orders to Customers
   # Each order belongs to exactly one customer
   - name: orders_to_customers
-    left_table: {{ table('orders') }}
-    right_table: {{ table('customers') }}
+    left_table: {{ ref('orders') }}
+    right_table: {{ ref('customers') }}
     relationship_conditions:
-      - "{{ column('orders', 'customer_id') }} = {{ column('customers', 'customer_id') }}"
+      - "{{ ref('orders', 'customer_id') }} = {{ ref('customers', 'customer_id') }}"
 
   # Orders to Locations
   # Each order is placed at exactly one location
   - name: orders_to_locations
-    left_table: {{ table('orders') }}
-    right_table: {{ table('locations') }}
+    left_table: {{ ref('orders') }}
+    right_table: {{ ref('locations') }}
     relationship_conditions:
-      - "{{ column('orders', 'location_id') }} = {{ column('locations', 'location_id') }}"
+      - "{{ ref('orders', 'location_id') }} = {{ ref('locations', 'location_id') }}"
 
   # ===========================================================================
   # ORDER ITEMS RELATIONSHIPS
@@ -32,18 +32,18 @@ snowflake_relationships:
   # Order Items to Orders
   # Each order item belongs to exactly one order
   - name: order_items_to_orders
-    left_table: {{ table('order_items') }}
-    right_table: {{ table('orders') }}
+    left_table: {{ ref('order_items') }}
+    right_table: {{ ref('orders') }}
     relationship_conditions:
-      - "{{ column('order_items', 'order_id') }} = {{ column('orders', 'order_id') }}"
+      - "{{ ref('order_items', 'order_id') }} = {{ ref('orders', 'order_id') }}"
 
   # Order Items to Products
   # Each order item references exactly one product
   - name: order_items_to_products
-    left_table: {{ table('order_items') }}
-    right_table: {{ table('products') }}
+    left_table: {{ ref('order_items') }}
+    right_table: {{ ref('products') }}
     relationship_conditions:
-      - "{{ column('order_items', 'product_id') }} = {{ column('products', 'product_id') }}"
+      - "{{ ref('order_items', 'product_id') }} = {{ ref('products', 'product_id') }}"
 
   # ===========================================================================
   # SUPPLIES RELATIONSHIPS
@@ -52,8 +52,8 @@ snowflake_relationships:
   # Supplies to Products
   # Each supply is associated with exactly one product
   - name: supplies_to_products
-    left_table: {{ table('supplies') }}
-    right_table: {{ table('products') }}
+    left_table: {{ ref('supplies') }}
+    right_table: {{ ref('products') }}
     relationship_conditions:
-      - "{{ column('supplies', 'product_id') }} = {{ column('products', 'product_id') }}"
+      - "{{ ref('supplies', 'product_id') }} = {{ ref('products', 'product_id') }}"
 

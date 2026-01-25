@@ -1,0 +1,34 @@
+# ============================================================================
+# JAFFLE SHOP CUSTOM INSTRUCTIONS
+# ============================================================================
+# Custom instructions guide Cortex Analyst's behavior when answering questions
+# about the Jaffle Shop data. These are included in the CREATE SEMANTIC VIEW DDL
+# as AI_SQL_GENERATION and AI_QUESTION_CATEGORIZATION clauses.
+
+snowflake_custom_instructions:
+  # -------------------------------------------------------------------------
+  # General Business Rules
+  # -------------------------------------------------------------------------
+  - name: jaffle_shop_business_rules
+    description: General business rules and query guidelines for Jaffle Shop data
+    question_categorization: |
+      When a question asks about "sales" or "revenue" without specifying a time period,
+      ask the user to clarify the date range they're interested in.
+      If a question asks for individual customer personal data like addresses,
+      inform them this data requires additional authorization.
+    sql_generation: |
+      When calculating revenue, always use the subtotal column (before tax).
+      For tax calculations, use the tax_paid column or multiply by the location's tax_rate.
+      Always round monetary values to 2 decimal places.
+      When filtering by status, use ORDER_STATUS = 'completed' for fulfilled orders.
+
+  # -------------------------------------------------------------------------
+  # Product & Menu Analytics Guidance
+  # -------------------------------------------------------------------------
+  - name: menu_analytics_guidance
+    description: Guidance for product and menu-related queries
+    sql_generation: |
+      When calculating product margins, use: (product price - supply_cost) / product price.
+      Product types are: 'jaffle' for food items and 'beverage' for drinks.
+      For inventory analysis, supplies with is_food_item = TRUE are perishable.
+      Always include product_name in results when analyzing products.
