@@ -7,6 +7,7 @@
 # ============================================================================
 project:
   semantic_models_dir: "snowflake_semantic_models"  # Where semantic layer YAML files live
+  dbt_models_dir: "models"                          # Directory containing dbt model YAML files
 
 # ============================================================================
 # VALIDATION (Optional)
