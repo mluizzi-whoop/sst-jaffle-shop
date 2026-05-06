@@ -1,0 +1,12 @@
+snowflake_filters:
+  - name: completed_orders_only
+    description: Only include orders that have been completed (not pending or returned)
+    tables:
+      - {{ ref('orders') }}
+    expr: "{{ ref('orders', 'order_status') }} = 'completed'"
+
+  - name: recent_orders
+    description: Orders from the last 90 days
+    tables:
+      - {{ ref('orders') }}
+    expr: "{{ ref('orders', 'ordered_at') }} >= DATEADD('day', -90, CURRENT_DATE())"
