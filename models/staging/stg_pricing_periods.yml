@@ -1,0 +1,81 @@
+version: 2
+models:
+  - name: stg_pricing_periods
+    description: 'Staging model for pricing periods. Each row represents a non-overlapping time range with pricing rules.'
+    config:
+      meta:
+        sst:
+          cortex_searchable: false
+          synonyms:
+            - pricing tiers
+            - rate periods
+            - price schedule
+          primary_key: pricing_period_id
+          unique_keys: []
+
+    columns:
+      - name: pricing_period_id
+        description: 'Unique identifier for the pricing period.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - period ID
+                - pricing ID
+
+      - name: period_name
+        description: 'Human-readable name for the pricing period.'
+        config:
+          meta:
+            sst:
+              column_type: dimension
+              data_type: TEXT
+              synonyms:
+                - pricing tier name
+                - period label
+
+      - name: base_price_multiplier
+        description: 'Multiplier applied to base prices during this period.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - price multiplier
+                - pricing factor
+
+      - name: discount_pct
+        description: 'Discount percentage applied during this period.'
+        config:
+          meta:
+            sst:
+              column_type: fact
+              data_type: NUMBER
+              synonyms:
+                - discount percentage
+                - discount rate
+
+      - name: effective_start_date
+        description: 'Start date of this pricing period (inclusive).'
+        config:
+          meta:
+            sst:
+              column_type: time_dimension
+              data_type: DATE
+              synonyms:
+                - period start
+                - effective from
+
+      - name: effective_end_date
+        description: 'End date of this pricing period (exclusive).'
+        config:
+          meta:
+            sst:
+              column_type: time_dimension
+              data_type: DATE
+              synonyms:
+                - period end
+                - effective until

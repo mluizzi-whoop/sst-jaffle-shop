@@ -1,0 +1,9 @@
+pricing_period_id,period_name,effective_start_date,effective_end_date,base_price_multiplier,discount_pct
+PP-001,Launch Pricing,2016-01-01,2017-01-01,0.80,20
+PP-002,Standard Pricing 2017,2017-01-01,2018-01-01,1.00,0
+PP-003,Standard Pricing 2018,2018-01-01,2019-01-01,1.05,0
+PP-004,Inflation Adjustment 2019,2019-01-01,2020-01-01,1.10,0
+PP-005,COVID Discount,2020-01-01,2021-01-01,0.90,10
+PP-006,Recovery Pricing,2021-01-01,2022-01-01,1.15,0
+PP-007,Standard Pricing 2022,2022-01-01,2023-01-01,1.20,0
+PP-008,Current Pricing,2023-01-01,2099-12-31,1.25,0

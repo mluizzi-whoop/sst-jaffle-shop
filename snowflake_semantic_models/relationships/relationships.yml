@@ -57,3 +57,15 @@ snowflake_relationships:
     relationship_conditions:
       - "{{ ref('supplies', 'product_id') }} = {{ ref('products', 'product_id') }}"
 
+  # ===========================================================================
+  # RANGE JOIN RELATIONSHIPS (Preview Feature)
+  # ===========================================================================
+
+  # Orders to Pricing Periods (Range Join)
+  # Each order falls into exactly one pricing period based on its order date
+  - name: orders_to_pricing_periods
+    left_table: {{ ref('orders') }}
+    right_table: {{ ref('pricing_periods') }}
+    relationship_conditions:
+      - "{{ ref('orders', 'ordered_at') }} BETWEEN {{ ref('pricing_periods', 'effective_start_date') }} AND {{ ref('pricing_periods', 'effective_end_date') }} EXCLUSIVE"
+

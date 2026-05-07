@@ -80,6 +80,7 @@ semantic_views:
       - {{ ref('products') }}
       - {{ ref('locations') }}
       - {{ ref('supplies') }}
+      - {{ ref('pricing_periods') }}
     custom_instructions:
       - {{ custom_instructions('jaffle_shop_business_rules') }}
       - {{ custom_instructions('menu_analytics_guidance') }}
