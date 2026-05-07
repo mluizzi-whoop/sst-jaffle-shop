@@ -403,7 +403,7 @@ snowflake_metrics:
     description: Latest order total per customer (semi-additive - cannot be summed across time)
     tables:
       - {{ ref('orders') }}
-    expr: "{{ ref('orders', 'order_total') }}"
+    expr: MAX({{ ref('orders', 'order_total') }})
     non_additive_by:
       - dimension: ordered_at
         order: DESC
@@ -420,11 +420,12 @@ snowflake_metrics:
       - orders_to_locations
 
   # Exercises: window functions (PR 9 / #143)
+  # Window metrics use <window_function>(<metric>) OVER (...) syntax per Snowflake docs.
   - name: cumulative_revenue
     description: Running total of revenue ordered by date (excludes date dimension from partition)
     tables:
       - {{ ref('orders') }}
-    expr: SUM({{ ref('orders', 'order_total') }})
+    expr: SUM({{ ref('orders', 'total_revenue') }})
     window:
       partition_by_excluding:
         - "{{ ref('orders', 'ordered_at') }}"
@@ -437,7 +438,7 @@ snowflake_metrics:
     tables:
       - {{ ref('orders') }}
       - {{ ref('customers') }}
-    expr: SUM({{ ref('orders', 'order_total') }})
+    expr: SUM({{ ref('orders', 'total_revenue') }})
     window:
       partition_by:
         - "{{ ref('customers', 'customer_id') }}"

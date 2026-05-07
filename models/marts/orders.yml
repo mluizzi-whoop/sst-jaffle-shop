@@ -13,9 +13,6 @@ models:
             - order tracking information
           primary_key: order_id
           unique_keys: []
-          tags:
-            data_domain: sales
-            sensitivity: internal
 
     columns:
       - name: order_id
