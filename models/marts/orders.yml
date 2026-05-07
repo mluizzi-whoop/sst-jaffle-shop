@@ -12,7 +12,8 @@ models:
             - sales transaction history
             - order tracking information
           primary_key: order_id
-          unique_keys: []
+          unique_keys:
+            - order_total_cents
 
     columns:
       - name: order_id

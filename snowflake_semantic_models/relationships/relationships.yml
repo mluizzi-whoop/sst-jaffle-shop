@@ -58,6 +58,19 @@ snowflake_relationships:
       - "{{ ref('supplies', 'product_id') }} = {{ ref('products', 'product_id') }}"
 
   # ===========================================================================
+  # ASOF RELATIONSHIPS (Temporal)
+  # ===========================================================================
+
+  # Orders to Locations (ASOF temporal join)
+  # Matches orders to locations that were open at the time of the order
+  - name: orders_to_locations_asof
+    left_table: {{ ref('orders') }}
+    right_table: {{ ref('locations') }}
+    relationship_conditions:
+      - "{{ ref('orders', 'location_id') }} = {{ ref('locations', 'location_id') }}"
+      - "{{ ref('orders', 'ordered_at') }} >= {{ ref('locations', 'opened_date') }}"
+
+  # ===========================================================================
   # RANGE JOIN RELATIONSHIPS (Preview Feature)
   # ===========================================================================
 

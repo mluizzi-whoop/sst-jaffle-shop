@@ -445,3 +445,26 @@ snowflake_metrics:
       order_by:
         - column: "{{ ref('orders', 'ordered_at') }}"
           direction: DESC
+
+  # Exercises: metric composition via metric() template (gap 3)
+  # Derived metric that references another metric via template composition
+  - name: net_revenue
+    description: Net revenue after subtracting cost of goods sold (uses metric composition)
+    tables:
+      - {{ ref('orders') }}
+    expr: "{{ metric('total_revenue') }} - {{ metric('total_order_cost') }}"
+
+  # Exercises: PRIVATE metric visibility (gap 4)
+  - name: internal_cost_ratio
+    description: Internal cost ratio metric (private - not queryable by end users)
+    tables:
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'order_cost') }}) / NULLIF(SUM({{ ref('orders', 'order_total') }}), 0)
+    visibility: private
+
+  # Exercises: legacy table()/column() templates (gap 7)
+  - name: legacy_total_orders
+    description: Total orders using legacy template syntax (backward compatibility test)
+    tables:
+      - {{ ref('orders') }}
+    expr: COUNT(DISTINCT {{ column('orders', 'order_id') }})

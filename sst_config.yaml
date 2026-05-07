@@ -33,8 +33,7 @@ enrichment:
 # Defer allows views to reference tables from a different target (e.g., prod)
 # while deploying to dev - useful for development without rebuilding all tables.
 #
-# defer:
-#   target: prod                                    # Default defer target (e.g., 'prod')
-#   state_path: null                                # Path to state artifacts (for dbt Cloud CLI users)
-#   auto_compile: false                             # For dbt Core: auto-compile manifest if not found
+defer:
+  target: prod
+  auto_compile: false
 
