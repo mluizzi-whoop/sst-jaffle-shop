@@ -30,3 +30,57 @@ snowflake_verified_queries:
     sql: "SELECT {{ ref('locations', 'location_name') }}, COUNT({{ ref('orders', 'order_id') }}) AS order_count FROM {{ ref('orders') }} JOIN {{ ref('locations') }} ON {{ ref('orders', 'location_id') }} = {{ ref('locations', 'location_id') }} GROUP BY 1 ORDER BY 2 DESC"
     verified_by: "analytics-team@jaffle.shop"
     verified_at: "2026-05-01"
+
+  - name: average_order_value_by_customer_type
+    tables:
+      - {{ ref('orders') }}
+      - {{ ref('customers') }}
+    question: "What is the average order value for new vs returning customers?"
+    sql: "SELECT {{ ref('customers', 'customer_type') }}, AVG({{ ref('orders', 'order_total') }}) AS avg_order_value FROM {{ ref('orders') }} JOIN {{ ref('customers') }} ON {{ ref('orders', 'customer_id') }} = {{ ref('customers', 'customer_id') }} GROUP BY 1"
+    use_as_onboarding_question: true
+    verified_by: "analytics-team@jaffle.shop"
+    verified_at: "2026-05-01"
+
+  - name: daily_order_count
+    tables:
+      - {{ ref('orders') }}
+    question: "How many orders are placed each day?"
+    sql: "SELECT DATE_TRUNC('DAY', {{ ref('orders', 'ordered_at') }}) AS order_date, COUNT({{ ref('orders', 'order_id') }}) AS daily_orders FROM {{ ref('orders') }} GROUP BY 1 ORDER BY 1"
+    verified_by: "analytics-team@jaffle.shop"
+    verified_at: "2026-05-01"
+
+  - name: top_products_by_quantity
+    tables:
+      - {{ ref('order_items') }}
+      - {{ ref('products') }}
+    question: "What are the top 5 most ordered products?"
+    sql: "SELECT {{ ref('products', 'product_name') }}, COUNT({{ ref('order_items', 'order_item_id') }}) AS quantity_sold FROM {{ ref('order_items') }} JOIN {{ ref('products') }} ON {{ ref('order_items', 'product_id') }} = {{ ref('products', 'product_id') }} GROUP BY 1 ORDER BY 2 DESC LIMIT 5"
+    use_as_onboarding_question: true
+    verified_by: "analytics-team@jaffle.shop"
+    verified_at: "2026-05-01"
+
+  - name: revenue_by_product_type
+    tables:
+      - {{ ref('order_items') }}
+      - {{ ref('products') }}
+    question: "What is the total revenue by product type (food vs drink)?"
+    sql: "SELECT {{ ref('products', 'product_type') }}, SUM({{ ref('order_items', 'product_price') }}) AS total_revenue FROM {{ ref('order_items') }} JOIN {{ ref('products') }} ON {{ ref('order_items', 'product_id') }} = {{ ref('products', 'product_id') }} GROUP BY 1"
+    verified_by: "analytics-team@jaffle.shop"
+    verified_at: "2026-05-01"
+
+  - name: customer_lifetime_value_distribution
+    tables:
+      - {{ ref('customers') }}
+    question: "What is the distribution of customer lifetime spend?"
+    sql: "SELECT CASE WHEN {{ ref('customers', 'lifetime_spend') }} < 100 THEN 'Under $100' WHEN {{ ref('customers', 'lifetime_spend') }} < 500 THEN '$100-$500' ELSE 'Over $500' END AS spend_tier, COUNT({{ ref('customers', 'customer_id') }}) AS customer_count FROM {{ ref('customers') }} GROUP BY 1 ORDER BY 2 DESC"
+    verified_by: "analytics-team@jaffle.shop"
+    verified_at: "2026-05-01"
+
+  - name: supply_cost_by_product
+    tables:
+      - {{ ref('supplies') }}
+      - {{ ref('products') }}
+    question: "What is the total supply cost per product?"
+    sql: "SELECT {{ ref('products', 'product_name') }}, SUM({{ ref('supplies', 'supply_cost') }}) AS total_supply_cost FROM {{ ref('supplies') }} JOIN {{ ref('products') }} ON {{ ref('supplies', 'product_id') }} = {{ ref('products', 'product_id') }} GROUP BY 1 ORDER BY 2 DESC"
+    verified_by: "analytics-team@jaffle.shop"
+    verified_at: "2026-05-01"

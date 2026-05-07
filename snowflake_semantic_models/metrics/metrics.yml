@@ -468,3 +468,307 @@ snowflake_metrics:
     tables:
       - {{ ref('orders') }}
     expr: COUNT(DISTINCT {{ column('orders', 'order_id') }})
+
+  # ===========================================================================
+  # ADDITIONAL METRICS - Volume & Edge Case Coverage
+  # ===========================================================================
+
+  # --- ORDER METRICS (Advanced) ---
+  - name: median_order_value
+    description: Median order total (approximation using PERCENTILE_CONT)
+    tables:
+      - {{ ref('orders') }}
+    expr: PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY {{ ref('orders', 'order_total') }})
+    synonyms:
+      - median order total
+      - middle order value
+
+  - name: max_order_value
+    description: Maximum single order total
+    tables:
+      - {{ ref('orders') }}
+    expr: MAX({{ ref('orders', 'order_total') }})
+    synonyms:
+      - largest order
+      - highest order value
+
+  - name: min_order_value
+    description: Minimum single order total
+    tables:
+      - {{ ref('orders') }}
+    expr: MIN({{ ref('orders', 'order_total') }})
+    synonyms:
+      - smallest order
+      - lowest order value
+
+  - name: order_value_range
+    description: Range between max and min order values
+    tables:
+      - {{ ref('orders') }}
+    expr: MAX({{ ref('orders', 'order_total') }}) - MIN({{ ref('orders', 'order_total') }})
+
+  - name: high_value_order_count
+    description: Number of orders exceeding $50
+    tables:
+      - {{ ref('orders') }}
+    expr: COUNT(CASE WHEN {{ ref('orders', 'order_total') }} > 50 THEN 1 END)
+    synonyms:
+      - large orders
+      - orders over fifty dollars
+
+  - name: low_value_order_count
+    description: Number of orders under $20
+    tables:
+      - {{ ref('orders') }}
+    expr: COUNT(CASE WHEN {{ ref('orders', 'order_total') }} < 20 THEN 1 END)
+
+  - name: avg_items_per_order
+    description: Average number of items per order
+    tables:
+      - {{ ref('orders') }}
+    expr: AVG({{ ref('orders', 'count_order_items') }})
+    synonyms:
+      - items per order
+      - average basket size
+
+  - name: orders_with_food_and_drink
+    description: Orders containing both food and drink items
+    tables:
+      - {{ ref('orders') }}
+    expr: COUNT(CASE WHEN {{ ref('orders', 'is_food_order') }} = TRUE AND {{ ref('orders', 'is_drink_order') }} = TRUE THEN 1 END)
+
+  - name: food_only_order_count
+    description: Orders containing only food (no drinks)
+    tables:
+      - {{ ref('orders') }}
+    expr: COUNT(CASE WHEN {{ ref('orders', 'is_food_order') }} = TRUE AND {{ ref('orders', 'is_drink_order') }} = FALSE THEN 1 END)
+
+  - name: drink_only_order_count
+    description: Orders containing only drinks (no food)
+    tables:
+      - {{ ref('orders') }}
+    expr: COUNT(CASE WHEN {{ ref('orders', 'is_drink_order') }} = TRUE AND {{ ref('orders', 'is_food_order') }} = FALSE THEN 1 END)
+
+  - name: repeat_customer_revenue
+    description: Total revenue from returning customers only
+    tables:
+      - {{ ref('orders') }}
+    expr: SUM(CASE WHEN {{ ref('orders', 'customer_order_number') }} > 1 THEN {{ ref('orders', 'order_total') }} ELSE 0 END)
+
+  - name: first_order_revenue
+    description: Total revenue from first-time orders only
+    tables:
+      - {{ ref('orders') }}
+    expr: SUM(CASE WHEN {{ ref('orders', 'customer_order_number') }} = 1 THEN {{ ref('orders', 'order_total') }} ELSE 0 END)
+
+  - name: avg_tax_per_order
+    description: Average tax paid per order
+    tables:
+      - {{ ref('orders') }}
+    expr: AVG({{ ref('orders', 'tax_paid') }})
+
+  - name: total_revenue_after_cost
+    description: Net margin using metric composition (total_revenue minus total_order_cost)
+    tables:
+      - {{ ref('orders') }}
+    expr: "{{ metric('total_revenue') }} - {{ metric('total_order_cost') }}"
+
+  - name: cost_per_item
+    description: Average cost per item ordered (composition of cost / items)
+    tables:
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'order_cost') }}) / NULLIF(SUM({{ ref('orders', 'count_order_items') }}), 0)
+
+  - name: revenue_per_item
+    description: Average revenue per item ordered
+    tables:
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'order_total') }}) / NULLIF(SUM({{ ref('orders', 'count_order_items') }}), 0)
+
+  - name: rolling_avg_revenue
+    description: Rolling average revenue (window over ordered_at, excluding date from partition)
+    tables:
+      - {{ ref('orders') }}
+    expr: AVG({{ ref('orders', 'total_revenue') }})
+    window:
+      partition_by_excluding:
+        - "{{ ref('orders', 'ordered_at') }}"
+      order_by:
+        - column: "{{ ref('orders', 'ordered_at') }}"
+          direction: ASC
+
+  # --- CUSTOMER METRICS (Advanced) ---
+  - name: max_customer_lifetime_spend
+    description: Highest lifetime spend among all customers
+    tables:
+      - {{ ref('customers') }}
+    expr: MAX({{ ref('customers', 'lifetime_spend') }})
+
+  - name: min_customer_lifetime_spend
+    description: Lowest lifetime spend among all customers
+    tables:
+      - {{ ref('customers') }}
+    expr: MIN({{ ref('customers', 'lifetime_spend') }})
+
+  - name: high_value_customer_count
+    description: Customers with lifetime spend over $500
+    tables:
+      - {{ ref('customers') }}
+    expr: COUNT(CASE WHEN {{ ref('customers', 'lifetime_spend') }} > 500 THEN 1 END)
+    synonyms:
+      - VIP customers
+      - premium customers
+
+  - name: avg_customer_order_frequency
+    description: Average number of orders per customer
+    tables:
+      - {{ ref('customers') }}
+    expr: AVG({{ ref('customers', 'count_lifetime_orders') }})
+
+  - name: single_order_customer_count
+    description: Customers who placed exactly one order
+    tables:
+      - {{ ref('customers') }}
+    expr: COUNT(CASE WHEN {{ ref('customers', 'count_lifetime_orders') }} = 1 THEN 1 END)
+    synonyms:
+      - one-time buyers
+      - single purchase customers
+
+  - name: loyal_customer_count
+    description: Customers with 5 or more orders
+    tables:
+      - {{ ref('customers') }}
+    expr: COUNT(CASE WHEN {{ ref('customers', 'count_lifetime_orders') }} >= 5 THEN 1 END)
+    synonyms:
+      - repeat buyers
+      - loyal shoppers
+
+  - name: customer_retention_rate
+    description: Percentage of customers who are returning (not new)
+    tables:
+      - {{ ref('customers') }}
+    expr: "{{ metric('returning_customer_count') }} * 100.0 / NULLIF({{ metric('total_customers') }}, 0)"
+
+  - name: avg_days_between_orders
+    description: Average days between first and last order per customer
+    tables:
+      - {{ ref('customers') }}
+    expr: AVG(DATEDIFF('day', {{ ref('customers', 'first_ordered_at') }}, {{ ref('customers', 'last_ordered_at') }}))
+
+  # --- ORDER ITEMS METRICS (Advanced) ---
+  - name: avg_item_price
+    description: Average price per order item
+    tables:
+      - {{ ref('order_items') }}
+    expr: AVG({{ ref('order_items', 'product_price') }})
+    synonyms:
+      - average item cost
+      - mean item price
+
+  - name: max_item_price
+    description: Most expensive single item sold
+    tables:
+      - {{ ref('order_items') }}
+    expr: MAX({{ ref('order_items', 'product_price') }})
+
+  - name: min_item_price
+    description: Cheapest single item sold
+    tables:
+      - {{ ref('order_items') }}
+    expr: MIN({{ ref('order_items', 'product_price') }})
+
+  - name: distinct_products_sold
+    description: Number of unique products that have been ordered
+    tables:
+      - {{ ref('order_items') }}
+    expr: COUNT(DISTINCT {{ ref('order_items', 'product_id') }})
+    synonyms:
+      - unique products sold
+      - product variety
+
+  - name: food_to_drink_ratio
+    description: Ratio of food items sold to drink items sold
+    tables:
+      - {{ ref('order_items') }}
+    expr: "{{ metric('food_items_sold') }} * 1.0 / NULLIF({{ metric('drink_items_sold') }}, 0)"
+
+  # --- PRODUCT METRICS (Advanced) ---
+  - name: most_expensive_product_price
+    description: Price of the most expensive product in catalog
+    tables:
+      - {{ ref('products') }}
+    expr: MAX({{ ref('products', 'product_price') }})
+
+  - name: cheapest_product_price
+    description: Price of the cheapest product in catalog
+    tables:
+      - {{ ref('products') }}
+    expr: MIN({{ ref('products', 'product_price') }})
+
+  - name: product_price_range
+    description: Difference between most and least expensive products
+    tables:
+      - {{ ref('products') }}
+    expr: MAX({{ ref('products', 'product_price') }}) - MIN({{ ref('products', 'product_price') }})
+
+  - name: food_to_drink_product_ratio
+    description: Ratio of food products to drink products in catalog
+    tables:
+      - {{ ref('products') }}
+    expr: "{{ metric('food_product_count') }} * 1.0 / NULLIF({{ metric('drink_product_count') }}, 0)"
+
+  # --- LOCATION METRICS (Advanced) ---
+  - name: max_tax_rate
+    description: Highest tax rate across all locations
+    tables:
+      - {{ ref('locations') }}
+    expr: MAX({{ ref('locations', 'tax_rate') }})
+
+  - name: min_tax_rate
+    description: Lowest tax rate across all locations
+    tables:
+      - {{ ref('locations') }}
+    expr: MIN({{ ref('locations', 'tax_rate') }})
+
+  - name: tax_rate_spread
+    description: Difference between highest and lowest tax rates
+    tables:
+      - {{ ref('locations') }}
+    expr: MAX({{ ref('locations', 'tax_rate') }}) - MIN({{ ref('locations', 'tax_rate') }})
+
+  # --- SUPPLY METRICS (Advanced) ---
+  - name: most_expensive_supply
+    description: Cost of the most expensive supply item
+    tables:
+      - {{ ref('supplies') }}
+    expr: MAX({{ ref('supplies', 'supply_cost') }})
+
+  - name: cheapest_supply
+    description: Cost of the cheapest supply item
+    tables:
+      - {{ ref('supplies') }}
+    expr: MIN({{ ref('supplies', 'supply_cost') }})
+
+  - name: perishable_supply_percentage
+    description: Percentage of supplies that are perishable
+    tables:
+      - {{ ref('supplies') }}
+    expr: "{{ metric('perishable_supply_count') }} * 100.0 / NULLIF({{ metric('total_supplies') }}, 0)"
+
+  - name: supply_cost_variance
+    description: Variance in supply costs (measures spread)
+    tables:
+      - {{ ref('supplies') }}
+    expr: VARIANCE({{ ref('supplies', 'supply_cost') }})
+
+  - name: total_perishable_cost
+    description: Total cost of perishable supplies only
+    tables:
+      - {{ ref('supplies') }}
+    expr: SUM(CASE WHEN {{ ref('supplies', 'is_perishable_supply') }} = TRUE THEN {{ ref('supplies', 'supply_cost') }} ELSE 0 END)
+
+  - name: total_non_perishable_cost
+    description: Total cost of non-perishable supplies only
+    tables:
+      - {{ ref('supplies') }}
+    expr: SUM(CASE WHEN {{ ref('supplies', 'is_perishable_supply') }} = FALSE THEN {{ ref('supplies', 'supply_cost') }} ELSE 0 END)

@@ -10,3 +10,21 @@ snowflake_filters:
     tables:
       - {{ ref('orders') }}
     expr: "{{ ref('orders', 'ordered_at') }} >= DATEADD('day', -90, CURRENT_DATE())"
+
+  - name: high_value_orders
+    description: Only include orders with total greater than $25
+    tables:
+      - {{ ref('orders') }}
+    expr: "{{ ref('orders', 'order_total') }} > 25"
+
+  - name: returning_customers_only
+    description: Only include returning customers (exclude first-time buyers)
+    tables:
+      - {{ ref('customers') }}
+    expr: "{{ ref('customers', 'customer_type') }} = 'returning'"
+
+  - name: food_orders_only
+    description: Only include orders that contain food items
+    tables:
+      - {{ ref('orders') }}
+    expr: "{{ ref('orders', 'is_food_order') }} = TRUE"
