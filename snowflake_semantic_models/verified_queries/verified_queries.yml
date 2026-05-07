@@ -7,7 +7,7 @@ snowflake_verified_queries:
     tables:
       - {{ ref('orders') }}
     question: "What is the total revenue by month?"
-    sql: "SELECT DATE_TRUNC('MONTH', {{ ref('orders', 'ordered_at') }}), SUM({{ ref('orders', 'order_total') }}) AS total_revenue FROM {{ ref('orders') }} GROUP BY 1 ORDER BY 1"
+    sql: "SELECT DATE_TRUNC('MONTH', orders.ordered_at), SUM(orders.order_total) AS total_revenue FROM {{ ref('orders') }} GROUP BY 1 ORDER BY 1"
     use_as_onboarding_question: true
     verified_by: "analytics-team@jaffle.shop"
     verified_at: "2026-05-01"
@@ -17,7 +17,7 @@ snowflake_verified_queries:
       - {{ ref('orders') }}
       - {{ ref('customers') }}
     question: "Who are the top 10 customers by total revenue?"
-    sql: "SELECT {{ ref('customers', 'customer_name') }}, SUM({{ ref('orders', 'order_total') }}) AS total_revenue FROM {{ ref('orders') }} JOIN {{ ref('customers') }} ON {{ ref('orders', 'customer_id') }} = {{ ref('customers', 'customer_id') }} GROUP BY 1 ORDER BY 2 DESC LIMIT 10"
+    sql: "SELECT customers.customer_name, SUM(orders.order_total) AS total_revenue FROM {{ ref('orders') }} JOIN {{ ref('customers') }} ON orders.customer_id = customers.customer_id GROUP BY 1 ORDER BY 2 DESC LIMIT 10"
     use_as_onboarding_question: true
     verified_by: "analytics-team@jaffle.shop"
     verified_at: "2026-05-01"
@@ -27,7 +27,7 @@ snowflake_verified_queries:
       - {{ ref('orders') }}
       - {{ ref('locations') }}
     question: "How many orders were placed at each location?"
-    sql: "SELECT {{ ref('locations', 'location_name') }}, COUNT({{ ref('orders', 'order_id') }}) AS order_count FROM {{ ref('orders') }} JOIN {{ ref('locations') }} ON {{ ref('orders', 'location_id') }} = {{ ref('locations', 'location_id') }} GROUP BY 1 ORDER BY 2 DESC"
+    sql: "SELECT locations.location_name, COUNT(orders.order_id) AS order_count FROM {{ ref('orders') }} JOIN {{ ref('locations') }} ON orders.location_id = locations.location_id GROUP BY 1 ORDER BY 2 DESC"
     verified_by: "analytics-team@jaffle.shop"
     verified_at: "2026-05-01"
 
@@ -36,7 +36,7 @@ snowflake_verified_queries:
       - {{ ref('orders') }}
       - {{ ref('customers') }}
     question: "What is the average order value for new vs returning customers?"
-    sql: "SELECT {{ ref('customers', 'customer_type') }}, AVG({{ ref('orders', 'order_total') }}) AS avg_order_value FROM {{ ref('orders') }} JOIN {{ ref('customers') }} ON {{ ref('orders', 'customer_id') }} = {{ ref('customers', 'customer_id') }} GROUP BY 1"
+    sql: "SELECT customers.customer_type, AVG(orders.order_total) AS avg_order_value FROM {{ ref('orders') }} JOIN {{ ref('customers') }} ON orders.customer_id = customers.customer_id GROUP BY 1"
     use_as_onboarding_question: true
     verified_by: "analytics-team@jaffle.shop"
     verified_at: "2026-05-01"
@@ -64,7 +64,7 @@ snowflake_verified_queries:
       - {{ ref('order_items') }}
       - {{ ref('products') }}
     question: "What is the total revenue by product type (food vs drink)?"
-    sql: "SELECT {{ ref('products', 'product_type') }}, SUM({{ ref('order_items', 'product_price') }}) AS total_revenue FROM {{ ref('order_items') }} JOIN {{ ref('products') }} ON {{ ref('order_items', 'product_id') }} = {{ ref('products', 'product_id') }} GROUP BY 1"
+    sql: "SELECT products.product_type, SUM(order_items.product_price) AS total_revenue FROM {{ ref('order_items') }} JOIN {{ ref('products') }} ON order_items.product_id = products.product_id GROUP BY 1"
     verified_by: "analytics-team@jaffle.shop"
     verified_at: "2026-05-01"
 
@@ -72,7 +72,7 @@ snowflake_verified_queries:
     tables:
       - {{ ref('customers') }}
     question: "What is the distribution of customer lifetime spend?"
-    sql: "SELECT CASE WHEN {{ ref('customers', 'lifetime_spend') }} < 100 THEN 'Under $100' WHEN {{ ref('customers', 'lifetime_spend') }} < 500 THEN '$100-$500' ELSE 'Over $500' END AS spend_tier, COUNT({{ ref('customers', 'customer_id') }}) AS customer_count FROM {{ ref('customers') }} GROUP BY 1 ORDER BY 2 DESC"
+    sql: "SELECT CASE WHEN customers.lifetime_spend < 100 THEN 'Under $100' WHEN customers.lifetime_spend < 500 THEN '$100-$500' ELSE 'Over $500' END AS spend_tier, COUNT(customers.customer_id) AS customer_count FROM {{ ref('customers') }} GROUP BY 1 ORDER BY 2 DESC"
     verified_by: "analytics-team@jaffle.shop"
     verified_at: "2026-05-01"
 
