@@ -1,0 +1,32 @@
+snowflake_verified_queries:
+  # ===========================================================================
+  # VERIFIED QUERIES - Pre-validated questions for Cortex Analyst
+  # ===========================================================================
+
+  - name: monthly_revenue
+    tables:
+      - {{ ref('orders') }}
+    question: "What is the total revenue by month?"
+    sql: "SELECT DATE_TRUNC('MONTH', {{ ref('orders', 'ordered_at') }}), SUM({{ ref('orders', 'order_total') }}) AS total_revenue FROM {{ ref('orders') }} GROUP BY 1 ORDER BY 1"
+    use_as_onboarding_question: true
+    verified_by: "analytics-team@jaffle.shop"
+    verified_at: "2026-05-01"
+
+  - name: top_customers_by_revenue
+    tables:
+      - {{ ref('orders') }}
+      - {{ ref('customers') }}
+    question: "Who are the top 10 customers by total revenue?"
+    sql: "SELECT {{ ref('customers', 'customer_name') }}, SUM({{ ref('orders', 'order_total') }}) AS total_revenue FROM {{ ref('orders') }} JOIN {{ ref('customers') }} ON {{ ref('orders', 'customer_id') }} = {{ ref('customers', 'customer_id') }} GROUP BY 1 ORDER BY 2 DESC LIMIT 10"
+    use_as_onboarding_question: true
+    verified_by: "analytics-team@jaffle.shop"
+    verified_at: "2026-05-01"
+
+  - name: orders_by_location
+    tables:
+      - {{ ref('orders') }}
+      - {{ ref('locations') }}
+    question: "How many orders were placed at each location?"
+    sql: "SELECT {{ ref('locations', 'location_name') }}, COUNT({{ ref('orders', 'order_id') }}) AS order_count FROM {{ ref('orders') }} JOIN {{ ref('locations') }} ON {{ ref('orders', 'location_id') }} = {{ ref('locations', 'location_id') }} GROUP BY 1 ORDER BY 2 DESC"
+    verified_by: "analytics-team@jaffle.shop"
+    verified_at: "2026-05-01"

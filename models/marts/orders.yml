@@ -13,6 +13,9 @@ models:
             - order tracking information
           primary_key: order_id
           unique_keys: []
+          tags:
+            data_domain: sales
+            sensitivity: internal
 
     columns:
       - name: order_id
@@ -258,12 +261,13 @@ models:
               is_enum: false
 
       - name: order_cost
-        description: 'The cost of the order.'
+        description: 'The cost of the order (internal - used for margin calculations only).'
         config:
           meta:
             sst:
               column_type: fact
               data_type: NUMBER
+              visibility: private
               synonyms:
                 - order cost amount
                 - order cost value

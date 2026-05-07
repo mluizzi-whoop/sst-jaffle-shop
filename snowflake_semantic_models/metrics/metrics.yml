@@ -393,3 +393,54 @@ snowflake_metrics:
     expr: COUNT(CASE WHEN {{ ref('supplies', 'is_perishable_supply') }} = FALSE THEN 1 END)
     synonyms:
       - non_perishables_count
+
+  # ===========================================================================
+  # DDL PARITY TEST METRICS (exercises new SST features)
+  # ===========================================================================
+
+  # Exercises: non_additive_by (PR 4 / #138)
+  - name: latest_order_total
+    description: Latest order total per customer (semi-additive - cannot be summed across time)
+    tables:
+      - {{ ref('orders') }}
+    expr: "{{ ref('orders', 'order_total') }}"
+    non_additive_by:
+      - dimension: ordered_at
+        order: DESC
+        nulls: LAST
+
+  # Exercises: using_relationships (PR 5 / #141)
+  - name: revenue_by_location
+    description: Revenue attributed via orders-to-locations relationship
+    tables:
+      - {{ ref('orders') }}
+      - {{ ref('locations') }}
+    expr: SUM({{ ref('orders', 'order_total') }})
+    using_relationships:
+      - orders_to_locations
+
+  # Exercises: window functions (PR 9 / #143)
+  - name: cumulative_revenue
+    description: Running total of revenue ordered by date (excludes date dimension from partition)
+    tables:
+      - {{ ref('orders') }}
+    expr: SUM({{ ref('orders', 'order_total') }})
+    window:
+      partition_by_excluding:
+        - "{{ ref('orders', 'ordered_at') }}"
+      order_by:
+        - column: "{{ ref('orders', 'ordered_at') }}"
+          direction: ASC
+
+  - name: customer_revenue_rank
+    description: Revenue rank within each customer (most recent first)
+    tables:
+      - {{ ref('orders') }}
+      - {{ ref('customers') }}
+    expr: SUM({{ ref('orders', 'order_total') }})
+    window:
+      partition_by:
+        - "{{ ref('customers', 'customer_id') }}"
+      order_by:
+        - column: "{{ ref('orders', 'ordered_at') }}"
+          direction: DESC
